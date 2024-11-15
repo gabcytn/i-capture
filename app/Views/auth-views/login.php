@@ -39,10 +39,10 @@
                 <img src="<?= base_url("assets/insta-login.png"); ?>" alt="Login Image"/>
             </div>
             <div class="col-6">
-                <form>
+                <form action="<?= base_url("/login") ?>" method="post">
                     <h1 class="mb-5">Instaclone</h1>
-                    <input class="mt-5 form-control" type="text" id="username-input" required placeholder="Username"/>
-                    <input class="mt-3 form-control" type="password" id="password-input" required placeholder="Password"/>
+                    <input class="mt-5 form-control" name="username" type="text" id="username-input" required placeholder="Username"/>
+                    <input class="mt-3 form-control" name="password" type="password" id="password-input" required placeholder="Password"/>
 
                     <button type="submit" class="w-100 mt-5 btn btn-primary">Log in</button>
                     <p class="text-center fs-10 mt-2"><a class="text-decoration-none" href="#">Forgot password?</a></p>

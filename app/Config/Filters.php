@@ -2,6 +2,8 @@
 
 namespace Config;
 
+use App\Filters\AuthenticatedFilter;
+use App\Filters\UnauthenticatedFilter;
 use CodeIgniter\Config\Filters as BaseFilters;
 use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
@@ -34,6 +36,8 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'unAuthFilter'  => UnauthenticatedFilter::class,
+        'authFilter'    => AuthenticatedFilter::class
     ];
 
     /**
@@ -72,6 +76,7 @@ class Filters extends BaseFilters
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            "unAuthFilter" => ["except" => ["/login", "/register"]]
         ],
         'after' => [
             // 'honeypot',
@@ -103,5 +108,7 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    public array $filters = [];
+    public array $filters = [
+        "authFilter" => ["before" => ["/login", "/register"]]
+    ];
 }

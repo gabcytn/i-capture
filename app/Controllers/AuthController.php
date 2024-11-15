@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
+use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
 
@@ -40,7 +41,7 @@ class AuthController extends BaseController
         }
     }
 
-    public function checkUser ()
+    public function checkUser (): RedirectResponse
     {
         $username = $this->request->getPost("username");
         $password = $this->request->getPost("password");

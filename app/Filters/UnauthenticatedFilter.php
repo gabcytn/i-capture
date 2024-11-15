@@ -13,7 +13,7 @@ class UnauthenticatedFilter implements FilterInterface
     {
         $session = session();
         if (!$session->has("id")) {
-            return Services::response()->setStatusCode(401)->setJSON(["message" => "Unauthorized"]);
+            return redirect()->to(base_url("/login"));
         }
         return null;
     }

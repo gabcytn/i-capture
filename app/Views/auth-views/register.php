@@ -38,13 +38,12 @@
                 <img src="<?= base_url("assets/insta-login.png"); ?>" alt="Login Image"/>
             </div>
             <div class="col-6">
-                <form>
-                    <h1 class="mb-3">Instaclone</h1>
-                    <input class="mt-4 form-control" type="text" id="username-input" required placeholder="Username"/>
-                    <input class="mt-3 form-control" type="password" id="password-input" required placeholder="Password"/>
-                    <input class="mt-3 form-control" type="password" id="confirm-password-input" required placeholder="Confirm password"/>
+                <form action="<?= base_url("/register") ?>" method="POST">
+                    <h1 class="mb-5">Instaclone</h1>
+                    <input class="mt-5 form-control" name="username" type="text" id="username-input" required placeholder="Username"/>
+                    <input class="mt-3 form-control" name="password" type="password" id="password-input" required placeholder="Password"/>
 
-                    <button type="submit" class="w-100 mt-4 btn btn-primary">Sign up</button>
+                    <button type="submit" class="w-100 mt-5 btn btn-primary">Sign up</button>
                 </form>
                 <div class="no-account d-flex justify-content-center align-items-center p-3 mt-3">
                     <p>Already have an account? <a href="<?= base_url("/login"); ?>">Login</a> </p>

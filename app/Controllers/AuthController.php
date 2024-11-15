@@ -52,6 +52,7 @@ class AuthController extends BaseController
 
         if ($this->verifyPassword($password, $user->password)) {
             $session = session();
+            $session->start();
             $session->set([
                 "id" => $user->id,
                 "username" => $user->username
@@ -63,6 +64,14 @@ class AuthController extends BaseController
         return redirect()->to(base_url("/login"));
     }
 
+    public function logoutUser (): RedirectResponse
+    {
+        $session = session();
+        $session->destroy();
+        $session->close();
+
+        return redirect()->to(base_url("/login"));
+    }
     private function verifyPassword (string $password, string $hashedPassword): bool
     {
         return password_verify($password, $hashedPassword);

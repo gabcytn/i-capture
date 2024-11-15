@@ -1,6 +1,8 @@
 #-------------------------
 # Operating Specific Junk Files
 #-------------------------
+env
+.env
 
 # OS X
 .DS_Store

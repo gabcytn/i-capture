@@ -39,6 +39,8 @@
                 <img src="<?= base_url("assets/insta-login.png"); ?>" alt="Login Image"/>
             </div>
             <div class="col-6">
+                <?= helper("form") ?>
+                <?= validation_list_errors() ?>
                 <form action="<?= base_url("/login") ?>" method="post">
                     <h1 class="mb-5">Instaclone</h1>
                     <input class="mt-5 form-control" name="username" type="text" id="username-input" required placeholder="Username"/>

@@ -21,11 +21,13 @@ class AuthController extends BaseController
 
     public function createUser () : ResponseInterface | string
     {
-        $username = $this->request->getPost("username");
-        $password = $this->request->getPost("password");
+        $data = $this->request->getPost(["username", "password"]);
 
-        $validatedData = $this->validateUserRegisterInput();
-        if (sizeof($validatedData) == 0) { return $this->response->setStatusCode(400)->setJSON(["message" => "Invalid fields"]); }
+        $validatedData = $this->validateUserRegisterInput($data);
+
+        if (sizeof($validatedData) == 0) {
+            return view("auth-views/register");
+        }
 
         $password = $this->hashPassword($validatedData["password"]);
 
@@ -41,16 +43,19 @@ class AuthController extends BaseController
         }
     }
 
-    public function checkUser (): RedirectResponse
+    public function checkUser (): RedirectResponse | string
     {
-        $username = $this->request->getPost("username");
-        $password = $this->request->getPost("password");
+        $data = $this->request->getPost(["username", "password"]);
+
+        $validatedData = $this->validateUserLoginInput($data);
+
+        if (sizeof($validatedData) == 0) { return view ("auth-views/login"); }
 
         $model = model(UserModel::class);
-        $data = $model->findByUsername($username);
+        $data = $model->findByUsername($data["username"]);
         $user = $data[0];
 
-        if ($this->verifyPassword($password, $user->password)) {
+        if ($this->verifyPassword($validatedData["password"], $user->password)) {
             $session = session();
             $session->start();
             $session->set([
@@ -76,10 +81,24 @@ class AuthController extends BaseController
     {
         return password_verify($password, $hashedPassword);
     }
-    private function validateUserRegisterInput (): array
+    private function validateUserRegisterInput (array $data): array
     {
-        if (!$this->validate([
+        $rules = [
             "username" => "required|is_unique[users.username]|max_length[100]",
+            "password" => "required|min_length[8]"
+        ];
+
+        if (!$this->validateData($data, $rules)) {
+            return [];
+        }
+
+        return $this->validator->getValidated();
+    }
+
+    private function validateUserLoginInput (array $data): array
+    {
+        if (!$this->validateData($data, [
+            "username" => "required|max_length[100]",
             "password" => "required|min_length[8]"
         ])) {
             return [];

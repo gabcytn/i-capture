@@ -1,0 +1,52 @@
+a {
+    text-decoration: none;
+    color: black;
+    width: 100%;
+}
+.side-nav {
+    border-right: 1px solid #CCC;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100vh;
+}
+.side-nav h1 {
+    font-family: "Lobster Two", sans-serif;
+    font-size: 1.75rem;
+    padding-top: 2rem;
+    margin-left: 1.5rem;
+    cursor: pointer;
+}
+.side-nav-list {
+    margin-top: 2rem;
+    list-style-type: none;
+    padding-left: 1.0rem;
+}
+.side-nav-item{
+    padding: .75rem 0 .75rem .75rem;
+    margin-right: 1.5rem;
+    cursor: pointer;
+    font-size: 1.125rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.side-nav-item + .side-nav-item {
+    margin-top: .25rem;
+}
+.side-nav-item:hover {
+    background-color: #EEE;
+}
+.side-nav-item ion-icon {
+    font-size: 1.85rem;
+}
+.side-nav-link {
+    margin-left: .5rem;
+}
+
+#side-nav-profile {
+    width: 1.5rem;
+    border-radius: 100%;
+}

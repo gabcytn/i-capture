@@ -1,4 +1,4 @@
-# Insta-Clone 📸
+# iCapture 📸
 
 A semi-clone of Instagram, developed as a final project for IT0049. The application includes the core features of photo sharing, user accounts, followers, and likes. It was built using **CodeIgniter** (PHP framework) and **MySQL** for database management.
 

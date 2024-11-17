@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <title>@<?= session()->get("username") ?></title>
-    <?php include "app/Views/includes/bootstrap.php" ?>
-    <?php include "app/Views/includes/lobster-two.php" ?>
-    <?php include "app/Views/includes/ionicons.php"; ?>
-    <link rel="stylesheet" href="<?= base_url("assets/css/side-nav.css"); ?> " />
+    <?php include "includes/bootstrap.php"; ?>
+    <?php include "includes/ionicons.php"; ?>
+    <?php include "includes/lobster-two.php"; ?>
+    <link rel="stylesheet" href="<?= base_url("css/side-nav.css")?> " />
 
     <style>
         .container {
@@ -29,11 +29,11 @@
     </style>
 </head>
 <body>
-    <?php include "app/Views/includes/side-nav.php" ?>
+    <?php include "includes/side-nav.php" ?>
     <div class="container mt-5">
         <div class="row">
             <div class="col-4">
-                <img src="<?= base_url("assets/default-profile.jpg"); ?>" alt="Profile Picture"/>
+                <img src="<?= base_url("images/default-profile.jpg"); ?>" alt="Profile Picture"/>
             </div>
             <div class="col-8">
                 <div class="">

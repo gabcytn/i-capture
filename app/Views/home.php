@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <title>Instaclone</title>
-    <?php include "app/Views/includes/bootstrap.php"; ?>
-    <?php include "app/Views/includes/ionicons.php"; ?>
-    <?php include "app/Views/includes/lobster-two.php"; ?>
-    <link rel="stylesheet" href="<?= base_url("assets/css/side-nav.css")?> " />
+    <?php include "includes/bootstrap.php"; ?>
+    <?php include "includes/ionicons.php"; ?>
+    <?php include "includes/lobster-two.php"; ?>
+    <link rel="stylesheet" href="<?= base_url("css/side-nav.css")?> " />
 </head>
 <body>
-    <?php include "app/Views/includes/side-nav.php"; ?>
+    <?php include "includes/side-nav.php"; ?>
 </body>
 </html>

@@ -23,4 +23,10 @@ class PostModel extends Model
         return $data->getResult();
     }
 
+    public function getPostCount (int $id): int
+    {
+        $resultSet = $this->db->query("SELECT * FROM posts WHERE post_owner = ?", [$id]);
+        return $resultSet->getNumRows();
+    }
+
 }

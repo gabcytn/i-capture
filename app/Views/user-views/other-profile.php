@@ -13,6 +13,7 @@
         }
         .col-4 img {
             width: 10rem;
+            height: 10rem;
             border-radius: 100%;
         }
     </style>
@@ -22,7 +23,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-4">
-            <img src="<?= base_url("images/default-profile.jpg"); ?>" alt="Profile Picture"/>
+            <img src="<?= esc($profile_pic) ?>" alt="Profile Picture"/>
         </div>
         <div class="col-8">
             <div class="">
@@ -31,9 +32,9 @@
                     <button class="btn btn-primary">Follow</button>
                 </div>
                 <div class="d-flex gap-5 mt-3">
-                    <p>0 posts</p>
-                    <p>100 followers</p>
-                    <p>66 following</p>
+                    <p><?= esc($post_count); ?> posts</p>
+                    <p><?= esc($follower_count); ?> followers</p>
+                    <p><?= esc($following_count); ?> following</p>
                 </div>
             </div>
         </div>

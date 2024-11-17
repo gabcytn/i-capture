@@ -45,9 +45,9 @@
                         <button id="edit-username-btn" class="btn btn-secondary">Change username</button>
                     </div>
                     <div class="d-flex gap-5 mt-3">
-                        <p>0 posts</p>
-                        <p>100 followers</p>
-                        <p>66 following</p>
+                        <p><?= esc($post_count); ?> posts</p>
+                        <p><?= esc($follower_count); ?> followers</p>
+                        <p><?= esc($following_count); ?> following</p>
                     </div>
                 </div>
             </div>

@@ -28,7 +28,7 @@
             <div class="">
                 <div class="d-flex gap-3">
                     <p style="align-self: center; margin: 0; font-weight: 600;">@<?= esc($username) ?></p>
-                    <button href="#" class="btn btn-primary">Follow</button>
+                    <button class="btn btn-primary">Follow</button>
                 </div>
                 <div class="d-flex gap-5 mt-3">
                     <p>0 posts</p>
@@ -44,7 +44,7 @@
         <?php if (sizeof($posts) > 0): ?>
             <?php foreach ($posts as $post): ?>
                 <div class="col-6">
-                    <a href="#">
+                    <a href="<?=base_url("/posts/" . $post->id) ?>">
                         <img style="width: 100%; height: 300px" src="<?= esc($post->photo_url); ?>" alt="Post image" />
                         <p>Likes: <?= esc($post->likes); ?></p>
                     </a>

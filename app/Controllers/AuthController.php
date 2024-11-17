@@ -61,7 +61,8 @@ class AuthController extends BaseController
             $session->start();
             $session->set([
                 "id" => $user->id,
-                "username" => $user->username
+                "username" => $user->username,
+                "profile" => $user->profile_pic
             ]);
 
             return redirect()->to(base_url("/"));

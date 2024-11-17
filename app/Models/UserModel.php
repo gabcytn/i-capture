@@ -8,7 +8,7 @@ class UserModel extends Model
 {
     protected $table = "users";
     protected $primaryKey = "id";
-    protected $allowedFields = ["username", "password", "profile_pic", "bio"];
+    protected $allowedFields = ["username", "password", "profile_pic"];
     protected bool $updateOnlyChanged = true;
 
     public function findByUsername(string $username): array

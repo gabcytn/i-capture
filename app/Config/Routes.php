@@ -9,7 +9,7 @@ $routes->get('/', 'AccountsController::index');
 $routes->get("/login", "AuthController::login");
 $routes->get("/register", "AuthController::register");
 $routes->get("/logout", "AuthController::logoutUser");
-$routes->get("/posts/(:num)", "Home::posts/$1");
+$routes->get("/posts/(:num)", "PostsController::posts/$1");
 
 $routes->post("/register", "AuthController::createUser");
 $routes->post("/login", "AuthController::checkUser");

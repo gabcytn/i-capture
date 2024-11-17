@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\FollowerModel;
 use App\Models\PostModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\RedirectResponse;
@@ -17,17 +18,38 @@ class Home extends BaseController
     {
         $postModel = model(PostModel::class);
         $userModel = model(UserModel::class);
+        $followerModel = model(FollowerModel::class);
 
         if (sizeof($userModel->findByUsername($username)) == 0) {
             $errorMessage["message"] = "User Not Found!";
             return view("errors/html/error_404", $errorMessage);
         }
 
+        $currentUserId = session()->get("id");
+        $currentUserUsername = session()->get("username");
+
         $params["posts"] = $postModel->findAllByPostOwnerUsername($username);
         $params["username"] = $username;
 
-        $currentUserUsername = session()->get("username");
-        return $username == $currentUserUsername ? view("user-views/your-profile.php", $params) : view("user-views/other-profile", $params);
+        if ($currentUserUsername == $username)
+        {
+            $params["follower_count"] = $followerModel->getFollowerCount($currentUserId);
+            $params["following_count"] = $followerModel->getFollowingCount($currentUserId);
+            $params["post_count"] = $postModel->getPostCount($currentUserId);
+
+            return view("user-views/your-profile", $params);
+        }
+        else
+        {
+            $detailsOfTheUser = $userModel->findByUsername($username);
+            $idOfTheUser = $detailsOfTheUser[0]->id;
+            $params["follower_count"] = $followerModel->getFollowerCount($idOfTheUser);
+            $params["following_count"] = $followerModel->getFollowingCount($idOfTheUser);
+            $params["post_count"] = $postModel->getPostCount($idOfTheUser);
+            $params["profile_pic"] = $detailsOfTheUser[0]->profile_pic;
+
+            return view("user-views/other-profile", $params);
+        }
     }
 
     public function posts ($postID)

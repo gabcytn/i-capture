@@ -53,6 +53,7 @@ class AuthController extends BaseController
 
         $model = model(UserModel::class);
         $data = $model->findByUsername($data["username"]);
+        if (sizeof($data) == 0) { return redirect()->to("/login", 401, "refresh"); }
         $user = $data[0];
 
         if ($this->verifyPassword($validatedData["password"], $user->password)) {

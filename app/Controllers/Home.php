@@ -28,4 +28,23 @@ class Home extends BaseController
         $currentUserUsername = session()->get("username");
         return $username == $currentUserUsername ? view("user-views/your-profile.php", $params) : view("user-views/other-profile", $params);
     }
+
+    public function posts ($postID)
+    {
+        $postModel = model(PostModel::class);
+        $params["post"] = $postModel->find($postID);
+
+        return view("posts-views/your-posts", $params);
+    }
+
+    public function editProfile ()
+    {
+        $data = $this->request->getPost();
+        $image = $this->request->getFile("profile-pic");
+
+        if ($image->isValid() && !$image->hasMoved()) {
+            $newName = $image->getRandomName();
+            $image->move(WRITEPATH . "uploads", $newName);
+        }
+    }
 }

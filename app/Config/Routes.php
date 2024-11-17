@@ -13,3 +13,8 @@ $routes->get("/logout", "AuthController::logoutUser");
 $routes->post("/register", "AuthController::createUser");
 $routes->post("/login", "AuthController::checkUser");
 $routes->post("/logout", "AuthController::logoutUser");
+
+
+
+
+$routes->get("/(:segment)", "Home::profile");

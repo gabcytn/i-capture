@@ -27,7 +27,7 @@
             <div class="col-8">
                 <div class="">
                     <div class="d-flex gap-3">
-                        <p style="align-self: center; margin: 0; font-weight: 600;">@<?= esc(session()->get("username")) ?></p>
+                        <p style="align-self: center; margin: 0; font-weight: 600;">@<?= esc($username) ?></p>
                         <button class="btn btn-secondary">Edit Profile</button>
                     </div>
                     <div class="d-flex gap-5 mt-3">
@@ -38,6 +38,21 @@
                 </div>
             </div>
             <hr class="mt-4"/>
+        </div>
+
+        <div class="row">
+            <?php if (sizeof($posts) > 0): ?>
+                <?php foreach ($posts as $post): ?>
+                    <div class="col-6">
+                        <a href="#">
+                            <img style="width: 100%; height: 300px" src="<?= esc($post->photo_url); ?>" alt="Post image" />
+                            <p>Likes: <?= esc($post->likes); ?></p>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <h2 class="text-center">No Posts Yet</h2>
+            <?php endif; ?>
         </div>
     </div>
 </body>

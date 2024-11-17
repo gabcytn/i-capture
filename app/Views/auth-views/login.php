@@ -2,7 +2,7 @@
 
 <html lang="en">
 <head>
-    <title>Instaclone</title>
+    <title>iCapture</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lobster+Two:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
                 <?= helper("form") ?>
                 <?= validation_list_errors() ?>
                 <form action="<?= base_url("/login") ?>" method="post">
-                    <h1 class="mb-5">Instaclone</h1>
+                    <h1 class="mb-5">iCapture</h1>
                     <input class="mt-5 form-control" name="username" type="text" id="username-input" required placeholder="Username"/>
                     <input class="mt-3 form-control" name="password" type="password" id="password-input" required placeholder="Password"/>
 

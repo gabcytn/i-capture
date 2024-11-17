@@ -10,4 +10,17 @@ class PostModel extends Model
     protected $primaryKey = "id";
     protected $allowedFields = ["post_owner", "likes", "photo_url"];
     protected bool $updateOnlyChanged = true;
+
+    public function findAllByPostOwnerUsername ($username): array
+    {
+        $db = db_connect();
+        $userModel = model(UserModel::class);
+        $user = $userModel->findByUsername($username);
+
+        $postOwner = $user[0]->id;
+        $data = $db->query("SELECT * FROM posts WHERE post_owner = ?", [$postOwner]);
+
+        return $data->getResult();
+    }
+
 }

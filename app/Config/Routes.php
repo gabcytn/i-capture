@@ -17,4 +17,4 @@ $routes->post("/logout", "AuthController::logoutUser");
 
 
 
-$routes->get("/(:segment)", "Home::profile");
+$routes->get("/(:segment)", "Home::profile/$1");

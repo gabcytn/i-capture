@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\Models\PostModel;
+use App\Models\UserModel;
+
 class Home extends BaseController
 {
     public function index(): string
@@ -9,8 +12,20 @@ class Home extends BaseController
         return view("home");
     }
 
-    public function profile(): string
+    public function profile($username): string
     {
-        return view("user-views/your-profile.php");
+        $postModel = model(PostModel::class);
+        $userModel = model(UserModel::class);
+
+        if (sizeof($userModel->findByUsername($username)) == 0) {
+            $errorMessage["message"] = "User Not Found!";
+            return view("errors/html/error_404", $errorMessage);
+        }
+
+        $params["posts"] = $postModel->findAllByPostOwnerUsername($username);
+        $params["username"] = $username;
+
+        $currentUserUsername = session()->get("username");
+        return $username == $currentUserUsername ? view("user-views/your-profile.php", $params) : view("user-views/other-profile", $params);
     }
 }

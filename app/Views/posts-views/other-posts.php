@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Instaclone</title>
+    <title>iCapture</title>
     <?php include "includes/bootstrap.php" ?>
     <?php include "includes/lobster-two.php" ?>
     <?php include "includes/ionicons.php"; ?>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<?= helper("form"); ?>
 <html lang="en">
 <head>
     <title>@<?= session()->get("username") ?></title>
@@ -27,6 +28,12 @@
             border-radius: 10px;
             box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
         }
+
+        #edit-password-dialog {
+            width: 30%;
+            height: 32.5vh;
+        }
+
     </style>
 </head>
 <body>
@@ -42,7 +49,7 @@
                 <div class="">
                     <div class="d-flex gap-3">
                         <p style="align-self: center; margin: 0; font-weight: 600;">@<?= esc($username) ?></p>
-                        <button id="edit-username-btn" class="btn btn-secondary">Change username</button>
+                        <button id="edit-password-btn" class="btn btn-secondary">Change password</button>
                     </div>
                     <div class="d-flex gap-5 mt-3">
                         <p><?= esc($post_count); ?> posts</p>
@@ -51,6 +58,7 @@
                     </div>
                 </div>
             </div>
+            <?= validation_list_errors(); ?>
             <hr class="mt-4"/>
         </div>
 
@@ -70,13 +78,14 @@
         </div>
     </div>
 
-    <dialog id="edit-username-dialog">
-        <h4 class="text-center">Edit Username</h4>
-        <?= helper("form"); ?>
-        <?= validation_list_errors(); ?>
-        <form action="<?= base_url("/change-username") ?>" method="post" enctype="multipart/form-data">
-            <label for="username" class="form-label">Username</label>
-            <input value="<?= session()->get("username")?>" type="text" name="username" id="username" class="form-control"/>
+    <dialog id="edit-password-dialog">
+        <h4 class="text-center">Change Password</h4>
+        <form action="<?= base_url("/change-password") ?>" method="post" enctype="multipart/form-data">
+            <label for="old-password" class="form-label">Old Password</label>
+            <input type="password" name="old-password" id="old-password" class="form-control"/>
+
+            <label for="new-password" class="form-label">New Password</label>
+            <input type="password" name="new-password" id="new-password" class="form-control"/>
 
             <div class="mt-3"></div>
             <button type="submit" class="btn btn-warning">Update</button>
@@ -96,11 +105,11 @@
     </dialog>
 
     <script>
-        const editUsernameButton = document.querySelector("#edit-username-btn");
+        const editPasswordButton = document.querySelector("#edit-password-btn");
         const editPictureButton = document.querySelector("#edit-picture-btn");
 
         const editPictureDialog= document.querySelector("#edit-picture-dialog");
-        const editUsernameDialog = document.querySelector("#edit-username-dialog");
+        const editPasswordDialog = document.querySelector("#edit-password-dialog");
 
         const closeDialogButton = document.querySelectorAll(".close-dialog-btn");
 
@@ -108,16 +117,18 @@
             editPictureDialog.showModal();
         });
 
-        editUsernameButton.addEventListener("click", () => {
-            editUsernameDialog.showModal();
+        editPasswordButton.addEventListener("click", () => {
+            editPasswordDialog.showModal();
         });
 
         closeDialogButton.forEach(i => {
             i.addEventListener("click", () => {
                 editPictureDialog.close();
-                editUsernameDialog.close();
+                editPasswordDialog.close();
             })
         });
+
+        document.querySelector(".errors").classList.add("text-danger", "mt-3")
     </script>
 </body>
 </html>

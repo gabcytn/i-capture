@@ -14,7 +14,7 @@ $routes->get("/posts/(:num)", "PostsController::posts/$1");
 $routes->post("/register", "AuthController::createUser");
 $routes->post("/login", "AuthController::checkUser");
 $routes->post("/logout", "AuthController::logoutUser");
-$routes->post("/change-username", "AccountsController::changeUsername");
+$routes->post("/change-password", "AccountsController::changePassword");
 $routes->post("/change-picture", "AccountsController::changePicture");
 
 

@@ -20,66 +20,43 @@ class AccountsController extends BaseController
         $userModel = model(UserModel::class);
         $followerModel = model(FollowerModel::class);
 
-        if (sizeof($userModel->findByUsername($username)) == 0) {
-            $errorMessage["message"] = "User Not Found!";
+        if (!$userModel->find($username)) {
+            $errorMessage["message"] = "@" . $username . " Not Found!";
             return view("errors/html/error_404", $errorMessage);
         }
 
-        $currentUserId = session()->get("id");
         $currentUserUsername = session()->get("username");
 
         $params["posts"] = $postModel->findAllByPostOwnerUsername($username);
         $params["username"] = $username;
 
-        if ($currentUserUsername == $username)
-        {
-            $params["follower_count"] = $followerModel->getFollowerCount($currentUserId);
-            $params["following_count"] = $followerModel->getFollowingCount($currentUserId);
-            $params["post_count"] = $postModel->getPostCount($currentUserId);
+        $userDetails = $userModel->find($username);
 
-            return view("user-views/your-profile", $params);
-        }
-        else
-        {
-            $detailsOfTheUser = $userModel->findByUsername($username);
-            $idOfTheUser = $detailsOfTheUser[0]->id;
-            $params["follower_count"] = $followerModel->getFollowerCount($idOfTheUser);
-            $params["following_count"] = $followerModel->getFollowingCount($idOfTheUser);
-            $params["post_count"] = $postModel->getPostCount($idOfTheUser);
-            $params["profile_pic"] = $detailsOfTheUser[0]->profile_pic;
+        $params["follower_count"] = $followerModel->getFollowerCount($username);
+        $params["following_count"] = $followerModel->getFollowingCount($username);
+        $params["post_count"] = $postModel->getPostCount($username);
+        $params["profile_pic"] = $userDetails["profile_pic"];
 
-            return view("user-views/other-profile", $params);
-        }
+        return $currentUserUsername == $username ? view("user-views/your-profile", $params) : view("user-views/other-profile", $params);
     }
 
-
-    private function validateUserUpdateInput (array $data): array
+    public function changePassword (): RedirectResponse | string
     {
-        $currentUsername = session()->get("username");
-        if (!$this->validateData($data, [
-            "username" => "required|max_length[255]|is_unique[users.username, username, {$currentUsername}]"
-        ])) {
-            return [];
+        $requestBody = $this->request->getPost(["old-password", "new-password"]);
+
+        $validatedData = $this->validateUpdatePasswordInput($requestBody);
+
+        if (sizeof($validatedData) < 1) {
+            return $this->profile(session()->get("username"));
         }
-
-        return $this->validator->getValidated();
-    }
-
-    public function changeUsername(): RedirectResponse
-    {
-        $newUsername = $this->request->getPost("username");
-        $validatedUsername = $this->validateUserUpdateInput(["username" => $newUsername]);
-
-        if (sizeof($validatedUsername) == 0) { return redirect()->to(base_url("/" . session()->get("username")), 401, "refresh"); }
 
         $userModel = model(UserModel::class);
         $userModel->save([
-            "id" => session()->get("id"),
-            "username" => $validatedUsername["username"]
+            "id" => session()->get("username"),
+            "password" => password_hash($validatedData["new-password"], PASSWORD_DEFAULT)
         ]);
 
-        session()->set(["username" => $validatedUsername["username"]]);
-        return redirect()->to(base_url("/" . session()->get("username")));
+        return redirect()->to(base_url("/" . session()->get("username")), 200, "refresh");
     }
 
     public function changePicture(): RedirectResponse
@@ -91,11 +68,42 @@ class AccountsController extends BaseController
             $image->move(FCPATH . "images", $imageName);
             $userModel = model(UserModel::class);
             $userModel->save([
-                "id" => session()->get("id"),
+                "id" => session()->get("username"),
                 "profile_pic" => "images/" . $imageName
             ]);
             session()->set(["profile" => "images/" . $imageName]);
         }
         return redirect()->to(base_url("/" . session("username")), 200, "refresh");
+    }
+
+    private function validateUpdatePasswordInput (array $data): array
+    {
+        $userModel = model(UserModel::class);
+        $oldHashedPassword = $userModel->find(session()->get("username"))["password"];
+
+        if (!password_verify($data["old-password"], $oldHashedPassword)){
+            return [];
+        }
+        $rules = [
+            "old-password" => [
+                "rules" => "required|min_length[8]",
+                "errors" => [
+                    "required" => "Old password is missing"
+                ],
+            ],
+            "new-password" => [
+               "rules" => "required|min_length[8]",
+                "errors" => [
+                    "min_length" => "Minimum length of new password is 8 characters",
+                    "required" => "New password is missing"
+                ],
+            ],
+        ];
+
+        if ($this->validateData($data, $rules)) {
+            return $this->validator->getValidated();
+        }
+
+        return [];
     }
 }

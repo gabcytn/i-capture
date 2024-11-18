@@ -12,7 +12,7 @@ class UnauthenticatedFilter implements FilterInterface
     public function before (RequestInterface $request, $arguments = null)
     {
         $session = session();
-        if (!$session->has("id")) {
+        if (!$session->has("username")) {
             return redirect()->to(base_url("/login"));
         }
         return null;

@@ -15,21 +15,15 @@
             width: 3rem;
             height: 3rem;
             border-radius: 100%;
-        }
-    </style>
+        }    </style>
 </head>
 <body>
     <?php include "includes/side-nav.php" ?>
     <div class="container">
         <div class="row">
-            <div class="col-12 d-flex my-3 align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <img src="<?= base_url(esc($postOwnerProfile)); ?>" id="post-owner-profile" alt="Post owner profile picture" />
-                    <a href="<?= base_url(esc($post["post_owner"])) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post["post_owner"]); ?></strong></a>
-                </div>
-                <div>
-                    <button id="delete-post" href="<?= base_url("/posts" . $post["id"] . "/delete"); ?>" class="btn btn-danger">Delete</button>
-                </div>
+            <div class="col-12 d-flex my-3 align-items-center">
+                <img src="<?= base_url(esc($postOwnerProfile)); ?>" id="post-owner-profile" alt="Post owner profile picture" />
+                <a href="<?= base_url(esc($post["post_owner"])) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post["post_owner"]); ?></strong></a>
             </div>
             <img src="<?= esc($post["photo_url"]); ?>" alt="Post Image" />
             <div class="col-12 d-flex align-items-center mt-3">
@@ -47,22 +41,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const deleteButton = document.querySelector("#delete-post");
-
-        deleteButton.addEventListener("click", () => {
-            const currentLocation = window.location.href;
-
-            fetch(`${currentLocation}/delete`, {
-                method: "DELETE"
-            })
-                .then(res => res.json())
-                .then(data => {
-                    location.href = data.redirect;
-                });
-        });
-
-    </script>
 </body>
 </html>

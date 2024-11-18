@@ -93,7 +93,7 @@
     </dialog>
     <dialog id="edit-picture-dialog">
         <h4 class="text-center">Edit Profile</h4>
-        <form id="form-profile" action="<?= base_url("/change-picture") ?>" enctype="multipart/form-data">
+        <form action="<?= base_url("/change-picture") ?>" method="post" enctype="multipart/form-data">
             <label for="profile" class="form-label">Profile Picture</label>
             <input type="file" name="profile" id="profile" class="form-control"/>
 
@@ -101,7 +101,7 @@
             <button type="submit" class="btn btn-warning">Update</button>
             <button type="button" class="close-dialog-btn btn btn-danger">Close</button>
         </form>
-        </dialog>
+    </dialog>>
 
     <!--    Send data via fetch API-->
     <script>
@@ -149,29 +149,6 @@
                 });
         });
 
-        formProfile.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            const image = profilePicField.files[0];
-            const formData = new FormData();
-            formData.append("profile", image);
-
-            fetch(formProfile.action, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                method: "PUT",
-                body: formData
-            })
-                .then(res => {
-                    if (res.ok) {
-                        location.reload();
-                    }
-                })
-                .catch(e => {
-                    console.error(e.message);
-                })
-        });
     </script>
 
     <!--    Open and close dialogs-->

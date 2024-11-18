@@ -16,11 +16,9 @@ $routes->post("/login", "AuthController::checkUser");
 $routes->post("/logout", "AuthController::logoutUser");
 $routes->post("/posts/(:num)/unlike", "PostsController::unlike/$1");
 $routes->post("/posts/(:num)/like", "PostsController::like/$1");
+$routes->post("/change-picture", "AccountsController::changePicture");
 
 $routes->put("/change-password", "AccountsController::changePassword");
-$routes->put("/change-picture", "AccountsController::changePicture");
-
-
 $routes->delete("/posts/(:num)/delete", "PostsController::delete/$1");
 
 

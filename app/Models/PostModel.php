@@ -11,21 +11,16 @@ class PostModel extends Model
     protected $allowedFields = ["post_owner", "likes", "photo_url"];
     protected bool $updateOnlyChanged = true;
 
-    public function findAllByPostOwnerUsername ($username): array
+    public function findAllByPostOwnerUsername (string $username): array
     {
-        $db = db_connect();
-        $userModel = model(UserModel::class);
-        $user = $userModel->findByUsername($username);
-
-        $postOwner = $user[0]->id;
-        $data = $db->query("SELECT * FROM posts WHERE post_owner = ?", [$postOwner]);
+        $data = $this->db->query("SELECT * FROM posts WHERE post_owner = ?", [$username]);
 
         return $data->getResult();
     }
 
-    public function getPostCount (int $id): int
+    public function getPostCount (string $username): int
     {
-        $resultSet = $this->db->query("SELECT * FROM posts WHERE post_owner = ?", [$id]);
+        $resultSet = $this->db->query("SELECT * FROM posts WHERE post_owner = ?", [$username]);
         return $resultSet->getNumRows();
     }
 

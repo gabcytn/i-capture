@@ -7,8 +7,7 @@ A semi-clone of Instagram, developed as a final project for IT0049. The applicat
 - **User Accounts**: Users can register, log in, and manage their profile. 🧑‍💻
 - **Photo Sharing**: Users can upload, view, and delete photos. 📸
 - **Followers**: Users can follow or unfollow other users. 👥
-- **Likes**: Users can like and unlike photos. ❤️
-- **Responsive Design**: The application is responsive and works on both desktop and mobile devices. 📱💻
+- **Likes**: Users can like and unlike photos. ❤
 
 ## Tech Stack ⚙️
 
@@ -16,4 +15,5 @@ A semi-clone of Instagram, developed as a final project for IT0049. The applicat
 - **Database**: MySQL 🗄️
 - **Frontend**: HTML, Bootstrap CSS, JavaScript 🌐
 - **Authentication**: Session-based login system 🔐
+- **Storage**: Cloudinary ☁
 

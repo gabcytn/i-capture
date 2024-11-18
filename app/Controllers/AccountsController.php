@@ -58,7 +58,6 @@ class AccountsController extends BaseController
         ]);
 
         return $this->response->setJSON(["message" => "ok"]);
-//        return redirect()->to(base_url("/" . session()->get("username")), 200, "refresh");
     }
 
     public function changePicture(): RedirectResponse

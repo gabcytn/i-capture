@@ -6,6 +6,7 @@ use App\Models\FollowerModel;
 use App\Models\PostModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\RedirectResponse;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class AccountsController extends BaseController
 {
@@ -40,23 +41,24 @@ class AccountsController extends BaseController
         return $currentUserUsername == $username ? view("user-views/your-profile", $params) : view("user-views/other-profile", $params);
     }
 
-    public function changePassword (): RedirectResponse | string
+    public function changePassword (): RedirectResponse | string | ResponseInterface
     {
-        $requestBody = $this->request->getPost(["old-password", "new-password"]);
+        $requestBody = $this->request->getJSON(true);
 
         $validatedData = $this->validateUpdatePasswordInput($requestBody);
 
-        if (sizeof($validatedData) < 1) {
-            return $this->profile(session()->get("username"));
+        if (!$validatedData[0]) {
+            return $this->response->setJSON(["message" => $validatedData[1]]);
         }
 
         $userModel = model(UserModel::class);
         $userModel->save([
             "id" => session()->get("username"),
-            "password" => password_hash($validatedData["new-password"], PASSWORD_DEFAULT)
+            "password" => password_hash($validatedData[1]["new-password"], PASSWORD_DEFAULT)
         ]);
 
-        return redirect()->to(base_url("/" . session()->get("username")), 200, "refresh");
+        return $this->response->setJSON(["message" => "ok"]);
+//        return redirect()->to(base_url("/" . session()->get("username")), 200, "refresh");
     }
 
     public function changePicture(): RedirectResponse
@@ -76,13 +78,13 @@ class AccountsController extends BaseController
         return redirect()->to(base_url("/" . session("username")), 200, "refresh");
     }
 
-    private function validateUpdatePasswordInput (array $data): array
+    private function validateUpdatePasswordInput (array $data): array | string
     {
         $userModel = model(UserModel::class);
         $oldHashedPassword = $userModel->find(session()->get("username"))["password"];
 
         if (!password_verify($data["old-password"], $oldHashedPassword)){
-            return [];
+            return [false, "Old password is incorrect"];
         }
         $rules = [
             "old-password" => [
@@ -101,9 +103,9 @@ class AccountsController extends BaseController
         ];
 
         if ($this->validateData($data, $rules)) {
-            return $this->validator->getValidated();
+            return [true, $this->validator->getValidated()];
         }
 
-        return [];
+        return [false, $this->validator->getError("new-password")];
     }
 }

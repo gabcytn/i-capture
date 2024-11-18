@@ -24,4 +24,13 @@ class PostModel extends Model
         return $resultSet->getNumRows();
     }
 
+    public function decreaseLikes ($postId): void
+    {
+        $this->db->query("UPDATE posts SET likes = likes - 1 WHERE id = ?", [$postId]);
+    }
+
+    public function increaseLikes ($postId): void
+    {
+        $this->db->query("UPDATE posts SET likes = likes + 1 WHERE id = ?", [$postId]);
+    }
 }

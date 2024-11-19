@@ -29,7 +29,15 @@
             <div class="">
                 <div class="d-flex gap-3">
                     <p style="align-self: center; margin: 0; font-weight: 600;">@<?= esc($username) ?></p>
-                    <button class="btn btn-primary">Follow</button>
+                    <?php if ($is_following): ?>
+                        <form method="post" action="<?= base_url(esc($username) . "/unfollow") ?>">
+                            <button type="submit" class="btn btn-secondary">Unfollow</button>
+                        </form>
+                    <?php else: ?>
+                        <form method="post" action="<?= base_url(esc($username) . "/follow") ?>">
+                            <button type="submit" class="btn btn-primary">Follow</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
                 <div class="d-flex gap-5 mt-3">
                     <p><?= esc($post_count); ?> posts</p>

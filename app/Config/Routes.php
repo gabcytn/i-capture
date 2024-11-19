@@ -19,6 +19,7 @@ $routes->post("/posts/(:num)/like", "PostsController::like/$1");
 $routes->post("/change-picture", "AccountsController::changePicture");
 $routes->post("/(:segment)/follow", "AccountsController::follow/$1");
 $routes->post("/(:segment)/unfollow", "AccountsController::unfollow/$1");
+$routes->post("/post", "PostsController::createPost");
 
 $routes->put("/change-password", "AccountsController::changePassword");
 $routes->delete("/posts/(:num)/delete", "PostsController::delete/$1");

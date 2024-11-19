@@ -8,7 +8,7 @@ class PostModel extends Model
 {
     protected $table = "posts";
     protected $primaryKey = "id";
-    protected $allowedFields = ["post_owner", "likes", "photo_url"];
+    protected $allowedFields = ["post_owner", "likes", "photo_url", "photo_public_id"];
     protected bool $updateOnlyChanged = true;
 
     public function findAllByPostOwnerUsername (string $username): array

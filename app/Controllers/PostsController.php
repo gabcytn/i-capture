@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\LikesModel;
 use App\Models\PostModel;
 use App\Models\UserModel;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Configuration\Configuration;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -69,5 +71,40 @@ class PostsController extends BaseController
         $postModel->delete($postId);
 
         return $this->response->setJSON(["redirect" => base_url("/$currentUser")]);
+    }
+
+    public function createPost()
+    {
+        $imageFile = $this->request->getFile("image");
+
+        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved())
+        {
+            Configuration::instance(getenv("CLOUDINARY_URL"));
+            $upload = new UploadApi();
+            $uploadDetails = json_encode(
+                $upload->upload($imageFile->getTempName(), [
+                    "use_filename" => false,
+                    "unique_filename" => true,
+                    "overwrite" => true
+                ]),
+                JSON_PRETTY_PRINT
+            );
+            $uploadDetails = json_decode($uploadDetails, true);
+
+            $postOwner = session()->get("username");
+            $imageLink = $uploadDetails["secure_url"];
+            $publicId = $uploadDetails["public_id"];
+
+            $postModel = model(PostModel::class);
+
+            $postModel->save([
+                "post_owner" => $postOwner,
+                "photo_url" => $imageLink,
+                "photo_public_id" =>$publicId
+            ]);
+
+            return redirect()->to(base_url($postOwner));
+        }
+        return redirect()->back();
     }
 }

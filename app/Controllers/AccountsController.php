@@ -37,6 +37,7 @@ class AccountsController extends BaseController
         $params["following_count"] = $followerModel->getFollowingCount($username);
         $params["post_count"] = $postModel->getPostCount($username);
         $params["profile_pic"] = $userDetails["profile_pic"];
+        $params["is_following"] = $followerModel->isFollowing($username, $currentUserUsername);
 
         return $currentUserUsername == $username ? view("user-views/your-profile", $params) : view("user-views/other-profile", $params);
     }
@@ -77,6 +78,28 @@ class AccountsController extends BaseController
         return redirect()->to(base_url("/" . session("username")), 200, "refresh");
     }
 
+    public function follow ($followingId): RedirectResponse
+    {
+        $followerId = session()->get("username");
+
+        $followerModel = model(FollowerModel::class);
+        $followerModel->save([
+            "following_id" => $followingId,
+            "follower_id" => $followerId
+        ]);
+
+        return redirect()->to(base_url($followingId));
+    }
+
+    public function unfollow($followingId): RedirectResponse
+    {
+        $followerId = session()->get("username");
+
+        $followerModel = model(FollowerModel::class);
+        $followerModel->removeFollower($followingId, $followerId);
+
+        return redirect()->to(base_url($followingId));
+    }
     private function validateUpdatePasswordInput (array $data): array | string
     {
         $userModel = model(UserModel::class);

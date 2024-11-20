@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\LikesModel;
 use App\Models\PostModel;
 use App\Models\UserModel;

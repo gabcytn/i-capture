@@ -74,7 +74,7 @@ class PostsController extends BaseController
         return $this->response->setJSON(["redirect" => base_url("/$currentUser")]);
     }
 
-    public function createPost()
+    public function createPost(): RedirectResponse
     {
         $imageFile = $this->request->getFile("image");
 

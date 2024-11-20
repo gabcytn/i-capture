@@ -60,7 +60,7 @@ class PostsController extends BaseController
         return redirect()->to(base_url("/posts/$postID"), 200, "refresh");
     }
 
-    public function delete ($postId)
+    public function delete ($postId): ResponseInterface
     {
         $currentUser = session()->get("username");
 

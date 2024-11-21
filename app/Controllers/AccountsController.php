@@ -10,10 +10,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class AccountsController extends BaseController
 {
-    public function index(): string
-    {
-        return view("home");
-    }
 
     public function profile($username): string
     {

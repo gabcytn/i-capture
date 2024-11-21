@@ -51,3 +51,15 @@ a {
     height: 1.5rem;
     border-radius: 100%;
 }
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+dialog {
+    width: 30vw;
+    border: none;
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+}

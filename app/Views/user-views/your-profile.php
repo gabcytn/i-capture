@@ -17,23 +17,6 @@
             height: 10rem;
             border-radius: 100%;
         }
-        dialog::backdrop {
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        dialog {
-            width: 25%;
-            height: 25vh;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        #edit-password-dialog {
-            width: 30%;
-            height: 32.5vh;
-        }
-
     </style>
 </head>
 <body>

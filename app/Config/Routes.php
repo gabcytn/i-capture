@@ -14,7 +14,6 @@ $routes->get("/search", "HomeController::search");
 
 $routes->post("/register", "AuthController::createUser");
 $routes->post("/login", "AuthController::checkUser");
-$routes->post("/logout", "AuthController::logoutUser");
 $routes->post("/posts/(:num)/unlike", "PostsController::unlike/$1");
 $routes->post("/posts/(:num)/like", "PostsController::like/$1");
 $routes->post("/change-picture", "AccountsController::changePicture");

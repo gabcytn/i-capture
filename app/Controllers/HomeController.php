@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use App\Models\UserModel;
 
 class HomeController extends BaseController
 {
@@ -13,6 +13,12 @@ class HomeController extends BaseController
 
     public function search (): string
     {
-        return $this->request->getGet("username");
+        $searchUsername = $this->request->getGet("username");
+        $userModel = model(UserModel::class);
+
+        $users = $userModel->search($searchUsername);
+        $params["users"] = $users;
+
+        return view("user-views/search", $params);
     }
 }

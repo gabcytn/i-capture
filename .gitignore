@@ -5,6 +5,7 @@ env
 .env
 *.png
 *.jpg
+!public/images/default-profile.jpg
 
 # OS X
 .DS_Store

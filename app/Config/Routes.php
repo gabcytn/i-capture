@@ -11,6 +11,8 @@ $routes->get("/register", "AuthController::register");
 $routes->get("/logout", "AuthController::logoutUser");
 $routes->get("/posts/(:num)", "PostsController::posts/$1");
 $routes->get("/search", "HomeController::search");
+$routes->get("/followers", "AccountsController::followers");
+$routes->get("/followings", "AccountsController::followings");
 
 $routes->post("/register", "AuthController::createUser");
 $routes->post("/login", "AuthController::checkUser");

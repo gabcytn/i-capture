@@ -8,12 +8,12 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'HomeController::index');
 $routes->get("/login", "AuthController::login");
 $routes->get("/register", "AuthController::register");
-$routes->get("/logout", "AuthController::logoutUser");
 $routes->get("/posts/(:num)", "PostsController::posts/$1");
 $routes->get("/search", "HomeController::search");
 $routes->get("/followers", "AccountsController::followers");
 $routes->get("/followings", "AccountsController::followings");
 
+$routes->post("/logout", "AuthController::logoutUser");
 $routes->post("/register", "AuthController::createUser");
 $routes->post("/login", "AuthController::checkUser");
 $routes->post("/posts/(:num)/unlike", "PostsController::unlike/$1");

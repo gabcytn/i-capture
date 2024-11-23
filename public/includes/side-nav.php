@@ -7,7 +7,9 @@
         <li class="side-nav-item"><img src="<?= base_url(session()->get("profile")); ?>" alt="Profile Picture" id="side-nav-profile"><a href="<?= base_url(session()->get("username")) ?>" class="side-nav-link">Profile</a></li>
     </ul>
 
-    <a href="<?= base_url("/logout") ?>" style="width:max-content; position: absolute; left: 2rem; bottom: 1.5rem" class="btn btn-danger">Logout</a>
+    <form action="<?= base_url("/logout") ?>" method="post" style="width:max-content; position: absolute; left: 2rem; bottom: 1.5rem">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
 </div>
 
 <dialog id="create-post-dialog">

@@ -32,4 +32,27 @@ class FollowerModel extends Model
     {
         $this->db->query("DELETE FROM followers WHERE follower_id = ? AND following_id = ?", [$followerId, $followingId]);
     }
+
+    public function getFollowersList ($username): array
+    {
+        $resultSet = $this->db->query("
+                    SELECT users.id, users.profile_pic
+                    FROM users
+                    INNER JOIN followers
+                    ON users.id = followers.follower_id
+                    WHERE followers.following_id = ?", $username);
+        return $resultSet->getResult();
+    }
+
+    public function getFollowingList ($username): array
+    {
+        $resultSet = $this->db->query("
+                    SELECT users.id, users.profile_pic
+                    FROM users
+                    INNER JOIN followers
+                    ON users.id = followers.following_id
+                    WHERE followers.follower_id = ?", $username);
+
+        return $resultSet->getResult();
+    }
 }

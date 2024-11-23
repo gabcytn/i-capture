@@ -96,6 +96,33 @@ class AccountsController extends BaseController
 
         return redirect()->to(base_url($followingId));
     }
+
+    public function followers (): ResponseInterface
+    {
+        $followerModel = model(FollowerModel::class);
+        $followersList = $followerModel->getFollowersList(session()->get("username"));
+
+        foreach ($followersList as $follower) {
+            $follower->href = base_url("/" . $follower->id);
+        }
+
+        $this->response->setJSON($followersList);
+        return $this->response;
+    }
+
+    public function followings (): ResponseInterface
+    {
+        $followerModel = model(FollowerModel::class);
+        $followingsList = $followerModel->getFollowingList(session()->get("username"));
+
+        foreach ($followingsList as $following) {
+            $following->href = base_url("/" . $following->id);
+        }
+
+        $this->response->setJSON($followingsList);
+        return $this->response;
+    }
+
     private function validateUpdatePasswordInput (array $data): array | string
     {
         $userModel = model(UserModel::class);

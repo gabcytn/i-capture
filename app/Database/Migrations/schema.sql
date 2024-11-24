@@ -1,6 +1,12 @@
-CREATE DATABASE i_capture;
+-- CREATE A DATABASE NAMED
 
-USE i_capture;
+-- i_capture
+-- i_capture
+-- i_capture
+-- i_capture
+-- i_capture
+
+-- THEN RUN THESE QUERIES:
 
 CREATE TABLE users (
     id VARCHAR(100) PRIMARY KEY,

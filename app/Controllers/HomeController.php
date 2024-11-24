@@ -8,7 +8,11 @@ class HomeController extends BaseController
 {
     public function index (): string
     {
-        return view("home");
+        $tab = $this->request->getGet("tab");
+        $params = [];
+
+        $params["tab"] = $tab;
+        return view("home", $params);
     }
 
     public function search (): string

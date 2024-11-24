@@ -33,4 +33,10 @@ class PostModel extends Model
     {
         $this->db->query("UPDATE posts SET likes = likes + 1 WHERE id = ?", [$postId]);
     }
+
+    public function findAllWherePostOwnerNotEqualTo (string $username): array
+    {
+        $resultSet = $this->db->query("SELECT * FROM posts WHERE post_owner != ? ORDER BY RAND() LIMIT 10", [$username]);
+        return $resultSet->getResult();
+    }
 }

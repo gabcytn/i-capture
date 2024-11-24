@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\PostModel;
 use App\Models\UserModel;
 
 class HomeController extends BaseController
@@ -9,9 +10,23 @@ class HomeController extends BaseController
     public function index (): string
     {
         $tab = $this->request->getGet("tab");
+        if (!$tab) { $tab = "foryou"; }
         $params = [];
 
+        switch ($tab)
+        {
+            case "foryou":
+                $posts = $this->getPostsForForYou(model(PostModel::class));
+                break;
+            case "following":
+                $posts = $this->getPostsForFollowing(model(PostModel::class));
+                break;
+            default:
+                return view("errors/html/error_404", ["message" => "Tab $tab is not available"]);
+        }
+
         $params["tab"] = $tab;
+        $params["posts"] = $posts;
         return view("home", $params);
     }
 
@@ -32,5 +47,15 @@ class HomeController extends BaseController
 
 
         return view("user-views/search", $params);
+    }
+
+    private function getPostsForForYou(PostModel $postModel): array
+    {
+        return $postModel->findAllWherePostOwnerNotEqualTo(session()->get("username"));
+    }
+    private function getPostsForFollowing (PostModel $postModel): array
+    {
+
+        return [];
     }
 }

@@ -18,6 +18,12 @@
         .active-tab {
             background-color: #eee;
         }
+
+        #post-owner-profile {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 100%;
+        }
     </style>
 </head>
 <body>
@@ -50,6 +56,22 @@
                     </a>
                 </div>
             <?php endif ?>
+        </div>
+
+        <div class="row">
+            <?php foreach ($posts as $post): ?>
+                <div class="col-12 d-flex my-3 align-items-center">
+                    <img src="<?= base_url("images/default-profile.jpg"); ?>" id="post-owner-profile" alt="Post owner profile picture" />
+                    <a href="<?= base_url(esc($post->post_owner)) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post->post_owner); ?></strong></a>
+                </div>
+                <img src="<?= esc($post->photo_url); ?>" alt="Post Image" />
+                <div class="col-12 d-flex align-items-center mt-3">
+                    <form method="post" action="<?= base_url("/posts/" . $post->id . "/like"); ?>" class="w-100 d-flex">
+                        <button type="submit" class="w-25 btn btn-primary">Like</button>
+                        <p id="like-count" class="m-0 fs-5 ms-3"><?= esc($post->likes); ?></p>
+                    </form>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </body>

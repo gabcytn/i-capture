@@ -31,7 +31,7 @@
                         <a href="<?= base_url("/" . esc($user->id)) ?>" class="d-flex align-items-center">
                             <img id="search-image" src="<?= esc($user->profile_pic) ?>" alt="User profile pic"/>
                             <p class="ms-3" id="search-username">@<strong><?= esc($user->id) ?></strong></p>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>

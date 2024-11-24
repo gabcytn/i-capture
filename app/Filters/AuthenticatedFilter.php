@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use CodeIgniter\Filters\FilterInterface;
+use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 
@@ -12,7 +13,7 @@ class AuthenticatedFilter implements FilterInterface
     /**
      * @inheritDoc
      */
-    public function before(RequestInterface $request, $arguments = null)
+    public function before(RequestInterface $request, $arguments = null): RedirectResponse | null
     {
         $session = session();
         if ($session->has("username")) {

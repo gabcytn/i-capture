@@ -61,17 +61,18 @@
         <div class="row">
             <?php foreach ($posts as $post): ?>
                 <div class="col-12 d-flex my-3 align-items-center">
-                    <img src="<?= base_url("images/default-profile.jpg"); ?>" id="post-owner-profile" alt="Post owner profile picture" />
-                    <a href="<?= base_url(esc($post->post_owner)) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post->post_owner); ?></strong></a>
+                    <img src="<?= base_url(esc($post->profile_pic)); ?>" id="post-owner-profile" alt="Post owner profile picture" />
+                    <a href="<?= base_url(esc($post->username)) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post->username); ?></strong></a>
                 </div>
                 <img src="<?= esc($post->photo_url); ?>" alt="Post Image" />
-                <div class="col-12 d-flex align-items-center mt-3">
-                    <form method="post" action="<?= base_url("/posts/" . $post->id . "/like"); ?>" class="w-100 d-flex">
+                <div class="col-12 d-flex align-items-center mt-3 marker">
+                    <form method="post" action="<?= base_url("/posts/" . $post->post_id . "/like"); ?>" class="w-100 d-flex">
                         <button type="submit" class="w-25 btn btn-primary">Like</button>
                         <p id="like-count" class="m-0 fs-5 ms-3"><?= esc($post->likes); ?></p>
                     </form>
                 </div>
             <?php endforeach; ?>
+            <button class="my-4 py-3 btn btn-warning">LOAD MORE</button>
         </div>
     </div>
 </body>

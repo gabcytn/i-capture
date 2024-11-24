@@ -14,6 +14,7 @@ class HomeController extends BaseController
     public function search (): string
     {
         $searchUsername = $this->request->getGet("username");
+        $params = [];
 
         if ($searchUsername == "") {
             $params["users"] = [];

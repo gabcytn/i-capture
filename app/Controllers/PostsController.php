@@ -12,7 +12,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class PostsController extends BaseController
 {
-    public function posts ($postID)
+    public function posts (int $postID): string
     {
         $sessionUser = session()->get("username");
 
@@ -20,11 +20,12 @@ class PostsController extends BaseController
         $userModel = model(UserModel::class);
         $likesModel = model(LikesModel::class);
 
+        $params = [];
         $params["post"] = $postModel->find($postID);
 
         if (!$params["post"]) {
-            $errorParam["message"] = "Post not found";
-            return view ("errors/html/error_404", $errorParam);
+            $params["message"] = "Post not found";
+            return view ("errors/html/error_404", $params);
         }
 
         $params["postOwnerProfile"] = $userModel->find($params["post"]["post_owner"])["profile_pic"];
@@ -37,7 +38,7 @@ class PostsController extends BaseController
         return view("posts-views/other-posts", $params);
     }
 
-    public function unlike ($postID): RedirectResponse
+    public function unlike (int $postID): RedirectResponse
     {
         $currentUser = session()->get("username");
 
@@ -48,7 +49,7 @@ class PostsController extends BaseController
         return redirect()->to(base_url("/posts/$postID"), 200, "refresh");
     }
 
-    public function like ($postID): RedirectResponse
+    public function like (int $postID): RedirectResponse
     {
         $currentUser = session()->get("username");
 
@@ -59,7 +60,7 @@ class PostsController extends BaseController
         return redirect()->to(base_url("/posts/$postID"), 200, "refresh");
     }
 
-    public function delete ($postId): ResponseInterface
+    public function delete (int $postId): ResponseInterface
     {
         $currentUser = session()->get("username");
 
@@ -108,7 +109,7 @@ class PostsController extends BaseController
         return redirect()->back();
     }
 
-    private function deleteImageInCloudinary ($publicId): void
+    private function deleteImageInCloudinary (string $publicId): void
     {
         Configuration::instance(getenv("CLOUDINARY_URL"));
         $upload = new UploadApi();

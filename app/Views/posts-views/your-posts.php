@@ -34,35 +34,36 @@
             <img src="<?= esc($post["photo_url"]); ?>" alt="Post Image" />
             <div class="col-12 d-flex align-items-center mt-3">
                 <?php if (esc($isLikedByThisUser)): ?>
-                    <form method="post" action="<?= base_url("/posts/" . $post["id"] . "/unlike") ?>" class="w-100 d-flex">
-                        <button type="submit" class="w-25 btn btn-secondary">Unlike</button>
+                    <form id="unlike-form" method="post" action="<?= base_url("/posts/" . $post["id"] . "/unlike") ?>" class="w-100 d-flex">
+                        <button id="unlike-button" type="submit" class="w-25 btn btn-secondary">Unlike</button>
                         <p id="like-count" class="m-0 fs-5 ms-3"><?= esc($post["likes"]); ?></p>
                     </form>
                 <?php else: ?>
-                    <form method="post" action="<?= base_url("/posts/" . $post["id"] . "/like"); ?>" class="w-100 d-flex">
-                        <button type="submit" class="w-25 btn btn-primary">Like</button>
+                    <form id="like-form" method="post" action="<?= base_url("/posts/" . $post["id"] . "/like"); ?>" class="w-100 d-flex">
+                        <button id="like-button" type="submit" class="w-25 btn btn-primary">Like</button>
                         <p id="like-count" class="m-0 fs-5 ms-3"><?= esc($post["likes"]); ?></p>
                     </form>
+                    <form id="unlike-form" action="<?= base_url("/posts/" . $post["id"] . "/unlike"); ?>"></form>
+                    <script src="<?= base_url("javascript/your-posts-notliked.js") ?>"></script>
                 <?php endif; ?>
             </div>
         </div>
     </div>
-
+    
     <script>
         const deleteButton = document.querySelector("#delete-post");
 
         deleteButton.addEventListener("click", () => {
-            const currentLocation = window.location.href;
+        const currentLocation = window.location.href;
 
-            fetch(`${currentLocation}/delete`, {
+        fetch(`${currentLocation}/delete`, {
                 method: "DELETE"
-            })
+        })
                 .then(res => res.json())
                 .then(data => {
-                    location.href = data.redirect;
+                        location.href = data.redirect;
                 });
         });
-
     </script>
 </body>
 </html>

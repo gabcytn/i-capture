@@ -89,7 +89,7 @@
                 <?php foreach ($posts as $post): ?>
                     <div class="col-12 d-flex my-3 align-items-center">
                         <img src="<?= base_url(esc($post->profile_pic)); ?>" id="post-owner-profile" alt="Post owner profile picture" />
-                        <a href="<?= base_url(esc($post->username)) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post->username); ?></strong></a>
+                        <a href="<?= base_url(esc($post->post_owner)) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post->post_owner); ?></strong></a>
                     </div>
                     <img src="<?= esc($post->photo_url); ?>" alt="Post Image" />
                     <div class="col-12 d-flex align-items-center mt-3 marker">

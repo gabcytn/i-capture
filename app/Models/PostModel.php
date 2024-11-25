@@ -38,22 +38,23 @@ class PostModel extends Model
     {
         $postIdPlaceholder = $this->createStringArrayFromIntArray($array);
         $sql =
-            "SELECT users.id AS username,
-            users.profile_pic, posts.id AS post_id,
-            posts.likes, posts.photo_url
-            FROM users
-            INNER JOIN posts
-            ON users.id = posts.post_owner
-            WHERE users.id != ?
+            "SELECT posts.id AS post_id, posts.post_owner, posts.likes, posts.photo_url, users.profile_pic
+            FROM posts 
+            INNER JOIN users 
+            ON posts.post_owner = users.id
+            LEFT JOIN likes
+            ON likes.post_id = posts.id AND likes.liker_id = ?
+            WHERE likes.post_id IS NULL
+            AND posts.post_owner != ?
             AND posts.id NOT IN ($postIdPlaceholder)
             ORDER BY RAND()
             LIMIT 10";
 
-        $resultSet = $this->db->query($sql, $username);
+        $resultSet = $this->db->query($sql, [$username, $username]);
         return $resultSet->getResult();
     }
 
-    private function createStringArrayFromIntArray ($nums): string
+    private function createStringArrayFromIntArray (array $nums): string
     {
         if (sizeof($nums) == 0) return "0";
 

@@ -38,7 +38,7 @@ class PostsController extends BaseController
         return view("posts-views/other-posts", $params);
     }
 
-    public function unlike (int $postID): RedirectResponse
+    public function unlike (int $postID): ResponseInterface
     {
         $currentUser = session()->get("username");
 
@@ -46,10 +46,10 @@ class PostsController extends BaseController
 
         $likesModel->unlike($postID, $currentUser);
 
-        return redirect()->to(base_url("/posts/$postID"), 200, "refresh");
+        return $this->response->setStatusCode(200);
     }
 
-    public function like (int $postID): RedirectResponse
+    public function like (int $postID): ResponseInterface
     {
         $currentUser = session()->get("username");
 
@@ -57,7 +57,7 @@ class PostsController extends BaseController
 
         $likesModel->like($postID, $currentUser);
 
-        return redirect()->to(base_url("/posts/$postID"), 200, "refresh");
+        return $this->response->setStatusCode(200);
     }
 
     public function delete (int $postId): ResponseInterface

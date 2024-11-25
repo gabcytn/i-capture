@@ -68,7 +68,7 @@ class PostsController extends BaseController
         $likesModel = model(LikesModel::class);
 
         $likesModel->deleteAllWherePostId($postId);
-        $this->deleteImageInCloudinary($postId);
+        $this->deleteImageInCloudinary($postId, $postModel);
         $postModel->delete($postId);
 
         return $this->response->setJSON(["redirect" => base_url("/$currentUser")]);
@@ -109,10 +109,12 @@ class PostsController extends BaseController
         return redirect()->back();
     }
 
-    private function deleteImageInCloudinary (string $publicId): void
+    private function deleteImageInCloudinary (string $postId, PostModel $postModel): void
     {
         Configuration::instance(getenv("CLOUDINARY_URL"));
         $upload = new UploadApi();
-        $upload->destroy($publicId);
+
+        $post = $postModel->find($postId);
+        $upload->destroy($post["photo_public_id"]);
     }
 }

@@ -38,13 +38,15 @@
                         <button id="unlike-button" type="submit" class="w-25 btn btn-secondary">Unlike</button>
                         <p id="like-count" class="m-0 fs-5 ms-3"><?= esc($post["likes"]); ?></p>
                     </form>
+                    <form id="like-form" action="<?= base_url("/posts/" . $post["id"] . "/like"); ?>"></form>
+                    <script src="<?= base_url("javascript/post-liked.js") ?>"></script>
                 <?php else: ?>
                     <form id="like-form" method="post" action="<?= base_url("/posts/" . $post["id"] . "/like"); ?>" class="w-100 d-flex">
                         <button id="like-button" type="submit" class="w-25 btn btn-primary">Like</button>
                         <p id="like-count" class="m-0 fs-5 ms-3"><?= esc($post["likes"]); ?></p>
                     </form>
                     <form id="unlike-form" action="<?= base_url("/posts/" . $post["id"] . "/unlike"); ?>"></form>
-                    <script src="<?= base_url("javascript/your-posts-notliked.js") ?>"></script>
+                    <script src="<?= base_url("javascript/post-notliked.js") ?>"></script>
                 <?php endif; ?>
             </div>
         </div>

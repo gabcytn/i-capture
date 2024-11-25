@@ -21,6 +21,9 @@ class HomeController extends BaseController
             case "following":
                 $posts = $this->getPostsForFollowing(model(PostModel::class));
                 break;
+            case "likes":
+                $posts = $this->getPostsForLikes(model(PostModel::class));
+                break;
             default:
                 return view("errors/html/error_404", ["message" => "Tab $tab is not available"]);
         }
@@ -51,9 +54,14 @@ class HomeController extends BaseController
 
     private function getPostsForForYou(PostModel $postModel): array
     {
-        return $postModel->findAllWherePostOwnerNotEqualTo(session()->get("username"));
+        return $postModel->findAllNotLikedBy(session()->get("username"));
     }
     private function getPostsForFollowing (PostModel $postModel): array
+    {
+
+        return [];
+    }
+    private function getPostsForLikes (PostModel $postModel): array
     {
 
         return [];

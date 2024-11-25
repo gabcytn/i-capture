@@ -34,7 +34,7 @@ class PostModel extends Model
         $this->db->query("UPDATE posts SET likes = likes + 1 WHERE id = ?", [$postId]);
     }
 
-    public function findAllWherePostOwnerNotEqualTo (string $username, array $array = []): array
+    public function findAllNotLikedBy(string $username, array $array = []): array
     {
         $postIdPlaceholder = $this->createStringArrayFromIntArray($array);
         $sql =

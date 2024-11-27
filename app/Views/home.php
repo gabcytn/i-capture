@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>iCapture</title>
     <?php include "includes/bootstrap.php"; ?>
     <?php include "includes/ionicons.php"; ?>
     <?php include "includes/lobster-two.php"; ?>
-    <link rel="stylesheet" href="<?= base_url("css/side-nav.css")?> " />
+    <link rel="stylesheet" href="<?= base_url("css/side-nav.css") ?> " />
     <style>
         .container {
             max-width: 650px !important;
@@ -24,11 +25,13 @@
             height: 3rem;
             border-radius: 100%;
         }
+
         img {
             max-width: 100%;
         }
     </style>
 </head>
+
 <body>
     <?php include "includes/side-nav.php"; ?>
 
@@ -104,7 +107,8 @@
                         </div>
                     </div>
                 <?php endforeach; ?>
-                <button class="my-4 py-3 btn btn-warning">LOAD MORE</button>
+                <form id="load-more-form" action="<?= base_url("/more-posts") ?>"></form>
+                <button id="load-more-button" class="my-4 py-3 btn btn-warning">LOAD MORE</button>
                 <script src="<?= base_url("javascript/home.js"); ?>"></script>
             <?php else: ?>
                 <h3 class="text-center mt-3">No posts available</h3>
@@ -112,4 +116,5 @@
         </div>
     </div>
 </body>
+
 </html>

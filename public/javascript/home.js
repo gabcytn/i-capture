@@ -42,3 +42,19 @@ async function unlike(url, likeButton, likeCount) {
     likeCount.textContent = Number(likeCount.textContent) - 1;
   }
 }
+
+// LOAD MORE CONTENT
+
+const loadMoreButton = document.querySelector("#load-more-button");
+const loadMoreForm = document.querySelector("#load-more-form");
+
+loadMoreButton.addEventListener("click", async () => {
+  try {
+    const res = await fetch(loadMoreForm.action);
+    const data = await res.json();
+
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+});

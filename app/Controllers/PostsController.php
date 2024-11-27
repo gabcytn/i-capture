@@ -77,8 +77,9 @@ class PostsController extends BaseController
     public function createPost(): RedirectResponse
     {
         $imageFile = $this->request->getFile("image");
+        $imageTypes = ["image/png", "image/jpg"];
 
-        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved())
+        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved() && in_array($imageFile->getMimeType(), $imageTypes))
         {
             Configuration::instance(getenv("CLOUDINARY_URL"));
             $upload = new UploadApi();
@@ -87,8 +88,7 @@ class PostsController extends BaseController
                     "use_filename" => false,
                     "unique_filename" => true,
                     "overwrite" => true
-                ]),
-                JSON_PRETTY_PRINT
+                ])
             );
             $uploadDetails = json_decode($uploadDetails, true);
 

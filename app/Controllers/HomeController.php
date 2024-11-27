@@ -4,18 +4,21 @@ namespace App\Controllers;
 
 use App\Models\PostModel;
 use App\Models\UserModel;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class HomeController extends BaseController
 {
-    public function index (): string
+    public function index(): string
     {
         $tab = $this->request->getGet("tab");
-        if (!$tab) { $tab = "foryou"; }
+        if (!$tab) {
+            $tab = "foryou";
+        }
         $params = [];
 
-        switch ($tab)
-        {
+        switch ($tab) {
             case "foryou":
+                session()->remove("posts");
                 $posts = $this->getPostsForForYou(model(PostModel::class));
                 break;
             case "following":
@@ -33,7 +36,7 @@ class HomeController extends BaseController
         return view("home", $params);
     }
 
-    public function search (): string
+    public function search(): string
     {
         $searchUsername = $this->request->getGet("username");
         $params = [];
@@ -52,16 +55,26 @@ class HomeController extends BaseController
         return view("user-views/search", $params);
     }
 
+    public function morePosts(): ResponseInterface
+    {
+        $postModel = model(PostModel::class);
+        $additionalPosts = $postModel->findPostsNotIn(session()->get("posts"), session()->get("username"));
+
+        $this->response->setJSON(["posts" => $additionalPosts]);
+        return $this->response;
+    }
+
     private function getPostsForForYou(PostModel $postModel): array
     {
         return $postModel->findAllNotLikedBy(session()->get("username"));
     }
-    private function getPostsForFollowing (PostModel $postModel): array
-    {
 
+    private function getPostsForFollowing(PostModel $postModel): array
+    {
         return [];
     }
-    private function getPostsForLikes (PostModel $postModel): array
+
+    private function getPostsForLikes(PostModel $postModel): array
     {
 
         return [];

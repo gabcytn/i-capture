@@ -12,6 +12,7 @@ $routes->get("/posts/(:num)", "PostsController::posts/$1");
 $routes->get("/search", "HomeController::search");
 $routes->get("/followers", "AccountsController::followers");
 $routes->get("/followings", "AccountsController::followings");
+$routes->get("/more-posts", "HomeController::morePosts");
 
 $routes->post("/logout", "AuthController::logoutUser");
 $routes->post("/register", "AuthController::createUser");
@@ -28,3 +29,4 @@ $routes->delete("/posts/(:num)/delete", "PostsController::delete/$1");
 
 
 $routes->get("/(:segment)", "AccountsController::profile/$1");
+

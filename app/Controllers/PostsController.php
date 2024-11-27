@@ -12,7 +12,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class PostsController extends BaseController
 {
-    public function posts (int $postID): string
+    public function posts(int $postID): string
     {
         $sessionUser = session()->get("username");
 
@@ -25,7 +25,7 @@ class PostsController extends BaseController
 
         if (!$params["post"]) {
             $params["message"] = "Post not found";
-            return view ("errors/html/error_404", $params);
+            return view("errors/html/error_404", $params);
         }
 
         $params["postOwnerProfile"] = $userModel->find($params["post"]["post_owner"])["profile_pic"];
@@ -38,7 +38,7 @@ class PostsController extends BaseController
         return view("posts-views/other-posts", $params);
     }
 
-    public function unlike (int $postID): ResponseInterface
+    public function unlike(int $postID): ResponseInterface
     {
         $currentUser = session()->get("username");
 
@@ -49,7 +49,7 @@ class PostsController extends BaseController
         return $this->response->setStatusCode(200);
     }
 
-    public function like (int $postID): ResponseInterface
+    public function like(int $postID): ResponseInterface
     {
         $currentUser = session()->get("username");
 
@@ -60,7 +60,7 @@ class PostsController extends BaseController
         return $this->response->setStatusCode(200);
     }
 
-    public function delete (int $postId): ResponseInterface
+    public function delete(int $postId): ResponseInterface
     {
         $currentUser = session()->get("username");
 
@@ -79,8 +79,7 @@ class PostsController extends BaseController
         $imageFile = $this->request->getFile("image");
         $imageTypes = ["image/png", "image/jpg"];
 
-        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved() && in_array($imageFile->getMimeType(), $imageTypes))
-        {
+        if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved() && in_array($imageFile->getMimeType(), $imageTypes)) {
             Configuration::instance(getenv("CLOUDINARY_URL"));
             $upload = new UploadApi();
             $uploadDetails = json_encode(
@@ -101,7 +100,7 @@ class PostsController extends BaseController
             $postModel->save([
                 "post_owner" => $postOwner,
                 "photo_url" => $imageLink,
-                "photo_public_id" =>$publicId
+                "photo_public_id" => $publicId
             ]);
 
             return redirect()->to(base_url($postOwner));
@@ -109,7 +108,7 @@ class PostsController extends BaseController
         return redirect()->back();
     }
 
-    private function deleteImageInCloudinary (string $postId, PostModel $postModel): void
+    private function deleteImageInCloudinary(string $postId, PostModel $postModel): void
     {
         Configuration::instance(getenv("CLOUDINARY_URL"));
         $upload = new UploadApi();

@@ -53,8 +53,61 @@ loadMoreButton.addEventListener("click", async () => {
     const res = await fetch(loadMoreForm.action);
     const data = await res.json();
 
-    console.log(data);
+    displayMorePosts(data.posts);
   } catch (error) {
     console.error(error);
   }
 });
+
+// DOM Manipulation to display more posts fetched
+
+function displayMorePosts(posts) {
+  const previousPosts = document.querySelectorAll(".post");
+  const lastPost = previousPosts[previousPosts.length - 1];
+
+  posts.forEach((post) => {
+    // div that holds all contents of a SINGLE post
+    const newPost = document.createElement("div");
+    newPost.classList.add("col-12");
+
+    // div that holds the profile pic and username
+    const headerDiv = document.createElement("div");
+    headerDiv.classList.add("d-flex", "my-3", "align-items-center");
+    const profilePic = document.createElement("img");
+    profilePic.src = post.profile_pic;
+    profilePic.alt = "Post owner's profile pic";
+    const postOwner = document.createElement("a");
+    postOwner.textContent = `@${post.post_owner}`;
+    postOwner.classList.add("ms-3", "fw-600");
+    headerDiv.append(profilePic, postOwner);
+
+    // img for the actual post
+    const actualPostImage = document.createElement("img");
+    actualPostImage.src = post.photo_url;
+    actualPostImage.alt = "Post Image";
+
+    // div that holds the like button section
+    const likeDiv = document.createElement("div");
+    likeDiv.classList.add(
+      "mt-3",
+      "d-flex",
+      "align-items-center",
+      "justify-content-start",
+    );
+    const newPostLikeButton = document.createElement("button");
+    newPostLikeButton.classList.add(
+      "btn",
+      "btn-primary",
+      "w-25",
+      "new-like-button",
+    );
+    const newPostLikeCount = document.createElement("p");
+    newPostLikeCount.textContent = post.likes;
+    newPostLikeCount.classList.add("fs-5", "m-0", "ms-3", "new-like-count");
+    likeDiv.append(newPostLikeButton, newPostLikeCount);
+
+    // append every sub div to the main div
+    newPost.append(headerDiv, actualPostImage, likeDiv);
+    // lastPost.insertAdjacentElement("afterend", newPost);
+  });
+}

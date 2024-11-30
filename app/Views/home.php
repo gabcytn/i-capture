@@ -20,7 +20,7 @@
             background-color: #eee;
         }
 
-        #post-owner-profile {
+        .post-owner-profile {
             width: 3rem;
             height: 3rem;
             border-radius: 100%;
@@ -95,7 +95,7 @@
                 <?php foreach ($posts as $post): ?>
                     <div class="post col-12">
                         <div class="d-flex my-3 align-items-center">
-                            <img src="<?= base_url(esc($post->profile_pic)); ?>" id="post-owner-profile" alt="Post owner profile picture" />
+                            <img src="<?= base_url(esc($post->profile_pic)); ?>" class="post-owner-profile" alt="Post owner profile picture" />
                             <a href="<?= base_url(esc($post->post_owner)) ?>" style="width: max-content;" class="ms-3">@<strong><?= esc($post->post_owner); ?></strong></a>
                         </div>
                         <img src="<?= esc($post->photo_url); ?>" alt="Post Image" />

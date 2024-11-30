@@ -76,9 +76,11 @@ function displayMorePosts(posts) {
     const profilePic = document.createElement("img");
     profilePic.src = post.profile_pic;
     profilePic.alt = "Post owner's profile pic";
+    profilePic.classList.add("post-owner-profile");
     const postOwner = document.createElement("a");
     postOwner.textContent = `@${post.post_owner}`;
     postOwner.classList.add("ms-3", "fw-600");
+    postOwner.style.width = "max-content";
     headerDiv.append(profilePic, postOwner);
 
     // img for the actual post
@@ -101,6 +103,7 @@ function displayMorePosts(posts) {
       "w-25",
       "new-like-button",
     );
+    newPostLikeButton.textContent = "Like";
     const newPostLikeCount = document.createElement("p");
     newPostLikeCount.textContent = post.likes;
     newPostLikeCount.classList.add("fs-5", "m-0", "ms-3", "new-like-count");
@@ -108,6 +111,11 @@ function displayMorePosts(posts) {
 
     // append every sub div to the main div
     newPost.append(headerDiv, actualPostImage, likeDiv);
-    // lastPost.insertAdjacentElement("afterend", newPost);
+    lastPost.insertAdjacentElement("afterend", newPost);
   });
+
+  if (posts.length < 10) {
+    loadMoreButton.disabled = true;
+    loadMoreButton.textContent = "NO MORE POSTS";
+  }
 }

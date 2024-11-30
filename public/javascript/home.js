@@ -68,7 +68,7 @@ function displayMorePosts(posts) {
   posts.forEach((post) => {
     // div that holds all contents of a SINGLE post
     const newPost = document.createElement("div");
-    newPost.classList.add("col-12");
+    newPost.classList.add("col-12", "post");
 
     // div that holds the profile pic and username
     const headerDiv = document.createElement("div");
@@ -114,7 +114,7 @@ function displayMorePosts(posts) {
     lastPost.insertAdjacentElement("afterend", newPost);
   });
 
-  if (posts.length < 10) {
+  if (posts.length === 0) {
     loadMoreButton.disabled = true;
     loadMoreButton.textContent = "NO MORE POSTS";
   }

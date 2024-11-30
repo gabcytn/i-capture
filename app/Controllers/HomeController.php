@@ -85,7 +85,7 @@ class HomeController extends BaseController
     private function includeImageLinksInPosts(array &$posts): array
     {
         foreach ($posts as &$post) {
-            $post->profile_pic = base_url("/images/" . $post->profile_pic);
+            $post->profile_pic = base_url("/" . $post->profile_pic);
         }
 
         return $posts;

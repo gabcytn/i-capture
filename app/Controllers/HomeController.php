@@ -59,7 +59,8 @@ class HomeController extends BaseController
     {
         $postModel = model(PostModel::class);
         $additionalPosts = $postModel->findPostsNotIn(session()->get("posts"), session()->get("username"));
-        $this->includeImageLinksInPosts($additionalPosts);
+        $this->includeProfilePicLinksInPosts($additionalPosts);
+        $this->includeLinkToProfileInPosts($additionalPosts);
 
         $this->response->setJSON(["posts" => $additionalPosts]);
         return $this->response;
@@ -82,10 +83,19 @@ class HomeController extends BaseController
     }
 
     // Include actual links for images
-    private function includeImageLinksInPosts(array &$posts): array
+    private function includeProfilePicLinksInPosts(array &$posts): array
     {
         foreach ($posts as &$post) {
             $post->profile_pic = base_url("/" . $post->profile_pic);
+        }
+
+        return $posts;
+    }
+
+    private function includeLinkToProfileInPosts(array &$posts)
+    {
+        foreach ($posts as &$post) {
+            $post->profile_link = base_url("/" . $post->post_owner);
         }
 
         return $posts;

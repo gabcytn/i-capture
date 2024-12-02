@@ -1,24 +1,30 @@
-const likeForms = document.querySelectorAll(".like-form");
-const unlikeForms = document.querySelectorAll(".unlike-form");
-const likeButtons = document.querySelectorAll(".like-button");
-const likeCounts = document.querySelectorAll(".like-count");
+document.addEventListener("DOMContentLoaded", () => {
+  main();
+});
 
-for (let i = 0; i < likeButtons.length; i++) {
-  likeButtons[i].addEventListener("click", async () => {
-    const currentLikeButton = likeButtons[i];
-    const currentLikeFormAction = likeForms[i].action;
-    const currentUnlikeFormAction = unlikeForms[i].action;
-    const currentLikeCount = likeCounts[i];
-    console.log(currentLikeFormAction);
-    if (likeButtons[i].textContent === "Like")
-      await like(currentLikeFormAction, currentLikeButton, currentLikeCount);
-    else if (likeButtons[i].textContent === "Unlike")
-      await unlike(
-        currentUnlikeFormAction,
-        currentLikeButton,
-        currentLikeCount,
-      );
-  });
+function main() {
+  const likeForms = document.querySelectorAll(".like-form");
+  const unlikeForms = document.querySelectorAll(".unlike-form");
+  const likeButtons = document.querySelectorAll(".like-button");
+  const likeCounts = document.querySelectorAll(".like-count");
+
+  for (let i = 0; i < likeButtons.length; i++) {
+    likeButtons[i].addEventListener("click", async () => {
+      const currentLikeButton = likeButtons[i];
+      const currentLikeFormAction = likeForms[i].action;
+      const currentUnlikeFormAction = unlikeForms[i].action;
+      const currentLikeCount = likeCounts[i];
+      console.log(currentLikeFormAction);
+      if (likeButtons[i].textContent === "Like")
+        await like(currentLikeFormAction, currentLikeButton, currentLikeCount);
+      else if (likeButtons[i].textContent === "Unlike")
+        await unlike(
+          currentUnlikeFormAction,
+          currentLikeButton,
+          currentLikeCount,
+        );
+    });
+  }
 }
 
 async function like(url, likeButton, likeCount) {
@@ -68,7 +74,7 @@ function displayMorePosts(posts) {
   posts.forEach((post) => {
     // div that holds all contents of a SINGLE post
     const newPost = document.createElement("div");
-    newPost.classList.add("col-12", "post");
+    newPost.classList.add("post", "col-12");
 
     // div that holds the profile pic and username
     const headerDiv = document.createElement("div");
@@ -78,9 +84,13 @@ function displayMorePosts(posts) {
     profilePic.alt = "Post owner's profile pic";
     profilePic.classList.add("post-owner-profile");
     const postOwner = document.createElement("a");
-    postOwner.textContent = `@${post.post_owner}`;
-    postOwner.classList.add("ms-3", "fw-600");
+    const strongTag = document.createElement("strong");
+    postOwner.href = post.profile_link;
+    strongTag.textContent = post.post_owner;
+    postOwner.textContent = "@";
+    postOwner.classList.add("ms-3");
     postOwner.style.width = "max-content";
+    postOwner.appendChild(strongTag);
     headerDiv.append(profilePic, postOwner);
 
     // img for the actual post
@@ -112,6 +122,8 @@ function displayMorePosts(posts) {
     // append every sub div to the main div
     newPost.append(headerDiv, actualPostImage, likeDiv);
     lastPost.insertAdjacentElement("afterend", newPost);
+
+    // main();
   });
 
   if (posts.length === 0) {

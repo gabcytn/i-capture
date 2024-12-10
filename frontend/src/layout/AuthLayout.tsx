@@ -5,9 +5,10 @@ type AuthLayoutProps = {
   subText: string;
   subTextHref: string;
   subTextAnchor: string;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
-function AuthLayout({ children, subText, subTextHref, subTextAnchor }: AuthLayoutProps) {
+function AuthLayout({ children, subText, subTextHref, subTextAnchor, onSubmit }: AuthLayoutProps) {
   return (
     <div className="container">
       <div className="row">
@@ -15,7 +16,7 @@ function AuthLayout({ children, subText, subTextHref, subTextAnchor }: AuthLayou
           <img src="/auth-img.png" alt="Auth image" />
         </div>
         <div className="col-6">
-          <form style={form}>
+          <form style={form} onSubmit={onSubmit}>
             <h3 style={heading} className="mb-5 text-center">iCapture</h3>
             {children}
           </form>

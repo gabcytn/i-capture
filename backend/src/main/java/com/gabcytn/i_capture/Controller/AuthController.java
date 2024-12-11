@@ -37,8 +37,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register (@RequestBody AuthRequest registerRequest) {
-
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return userService.registerUser(registerRequest);
     }
 
 }

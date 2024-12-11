@@ -1,6 +1,6 @@
 package com.gabcytn.i_capture.Model;
 
-public class LoginRequest {
+public class AuthRequest {
     private String username;
     private String password;
 
@@ -12,9 +12,9 @@ public class LoginRequest {
                 '}';
     }
 
-    public LoginRequest() {}
+    public AuthRequest() {}
 
-    public LoginRequest(String username, String password) {
+    public AuthRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }

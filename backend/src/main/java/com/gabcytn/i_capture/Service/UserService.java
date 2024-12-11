@@ -1,6 +1,6 @@
 package com.gabcytn.i_capture.Service;
 
-import com.gabcytn.i_capture.Model.LoginRequest;
+import com.gabcytn.i_capture.Model.AuthRequest;
 import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public ResponseEntity<Void> handleAuthentication (
-            LoginRequest loginRequest,
+            AuthRequest loginRequest,
             HttpServletRequest request,
             HttpServletResponse response
     )

@@ -1,6 +1,8 @@
 package com.gabcytn.i_capture.Repository;
 
 import com.gabcytn.i_capture.Model.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
@@ -23,6 +25,16 @@ public class UserRepository {
     public User findById (int id) {
         String sqlQuery = "SELECT * FROM users WHERE id = ?";
         return jdbcTemplate.query(sqlQuery, getResultSetExtractor(), id);
+    }
+
+    public ResponseEntity<Void> save (String username, String password) {
+        String sqlQuery = "INSERT INTO users (username, password) VALUES (?, ?)";
+        try {
+            jdbcTemplate.update(sqlQuery, username, password);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 

@@ -3,7 +3,7 @@ package com.gabcytn.i_capture.Model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class User {
-    private Integer id;
+    private int id;
     private String username;
     private String password;
     private String profilePic;

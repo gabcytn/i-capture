@@ -17,6 +17,7 @@ function Login() {
       if (!res.ok)
         throw new Error(`Error status code of: ${res.status}`);
 
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/");
 
     } catch (error: unknown) {

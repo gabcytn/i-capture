@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -57,10 +58,13 @@ public class UserService {
             securityContextRepository.saveContext(securityContext, request, response);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+        catch (BadCredentialsException e)
+        {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         catch (Exception e)
         {
-            System.err.println(e + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

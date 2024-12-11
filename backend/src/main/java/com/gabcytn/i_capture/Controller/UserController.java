@@ -1,6 +1,6 @@
 package com.gabcytn.i_capture.Controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gabcytn.i_capture.Model.LoginRequest;
 import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Model.UserPrincipal;
 import com.gabcytn.i_capture.Service.UserService;
@@ -15,10 +15,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
 
 @RestController
 public class UserController {
@@ -51,29 +47,41 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(HttpServletRequest request, HttpServletResponse response) {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        try (InputStream inputStream = request.getInputStream()) {
-            Map<String, String> authRequest = objectMapper.readValue(inputStream, Map.class);
-            String username = authRequest.get("username");
-            String password = authRequest.get("password");
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest,
+                                      HttpServletRequest request,
+                                      HttpServletResponse response)
+    {
+        try
+        {
+            String username = loginRequest.getUsername();
+            String password = loginRequest.getPassword();
 
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(username, password);
+            System.out.println(username);
+            System.out.println(password);
 
-            Authentication auth = this.authenticationManager.authenticate(authToken);
-            System.out.println(auth);
+//            UsernamePasswordAuthenticationToken authToken =
+//                    new UsernamePasswordAuthenticationToken(username, password);
+//
+//            Authentication auth = authenticationManager.authenticate(authToken);
+//
+//            // Create a new SecurityContext
+//            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+//            securityContext.setAuthentication(auth);
+//
+//            // Store the SecurityContext in the SecurityContextRepository
+//            securityContextRepository.saveContext(securityContext, request, response);
 
-            // Create a new SecurityContext
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            securityContext.setAuthentication(auth);
+            Authentication authenticationRequest =
+                    UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername(), loginRequest.getPassword());
 
-            // Store the SecurityContext in the SecurityContextRepository
-            this.securityContextRepository.saveContext(securityContext, request, response);
+            Authentication authenticationResponse =
+                    authenticationManager.authenticate(authenticationRequest);
 
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+        }
+        catch (Exception e)
+        {
+            System.err.println(e + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

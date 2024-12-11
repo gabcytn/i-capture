@@ -42,7 +42,7 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
             authorizationManagerRequestMatcherRegistry
-                    .requestMatchers("/login", "/logout").permitAll()
+                    .requestMatchers("/login", "/logout", "/register").permitAll()
                     .anyRequest().authenticated();
         });
 

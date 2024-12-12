@@ -8,10 +8,10 @@ function SideNav() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState<boolean>(false)
 
-  const username = localStorage.getItem("username")!;
+  const username = sessionStorage.getItem("username")!;
   const navigate = useNavigate();
   const url = import.meta.env.VITE_SERVER_URL;
-  const proflePic: string = localStorage.getItem("profilePic")!;
+  const proflePic: string = sessionStorage.getItem("profilePic")!;
 
   const openSearchDialog = () => {
     setIsSearchDialogOpen(true);
@@ -37,7 +37,7 @@ function SideNav() {
       });
 
       if (res.status === 204) {
-        localStorage.clear();
+        sessionStorage.clear();
         navigate("/login");
       }
 

@@ -27,6 +27,10 @@ function Login() {
       if (!res.ok)
         throw new Error(`Error status code of: ${res.status}`);
 
+      const data = await res.json();
+      localStorage.setItem("id", data.id);
+      localStorage.setItem("profilePic", data.profilePic);
+      localStorage.setItem("username", data.username);
       localStorage.setItem("isLoggedIn", "true");
       navigate("/");
 

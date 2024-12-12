@@ -19,7 +19,16 @@ function Register() {
     }
 
     try {
-      const res = await fetch(`${SERVER_URL}/login`)
+      const res = await fetch(`${SERVER_URL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      })
       if (!res.ok)
         throw new Error(`Error status code of: ${res.status}`);
 

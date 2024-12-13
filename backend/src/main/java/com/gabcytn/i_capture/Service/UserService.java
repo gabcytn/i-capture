@@ -39,7 +39,11 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public ResponseEntity<Void> handleAuthentication (
+    public User getUserByUsername (String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public ResponseEntity<User> handleAuthentication (
             AuthRequest loginRequest,
             HttpServletRequest request,
             HttpServletResponse response
@@ -60,15 +64,16 @@ public class UserService {
             // Store the SecurityContext in the SecurityContextRepository
             SecurityContextHolder.setContext(securityContext);
             securityContextRepository.saveContext(securityContext, request, response);
-            return new ResponseEntity<>(HttpStatus.OK);
+            User user = getUserByUsername(loginRequest.getUsername());
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
         catch (BadCredentialsException e)
         {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new User(), HttpStatus.UNAUTHORIZED);
         }
         catch (Exception e)
         {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new User(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

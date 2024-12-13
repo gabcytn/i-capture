@@ -1,23 +1,18 @@
 package com.gabcytn.i_capture.Controller;
 
 import com.gabcytn.i_capture.Model.AuthRequest;
+import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthController {
     private final UserService userService;
 
-    public AuthController(UserService userService,
-                          AuthenticationManager authenticationManager,
-                          SecurityContextRepository securityContextRepository
-    ) {
+    public AuthController(UserService userService) {
         this.userService = userService;
     }
 
@@ -27,7 +22,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(
+    public ResponseEntity<User> login(
             @RequestBody AuthRequest loginRequest,
             HttpServletRequest request,
             HttpServletResponse response)

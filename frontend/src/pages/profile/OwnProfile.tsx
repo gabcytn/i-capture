@@ -9,6 +9,7 @@ import FormInput from "../../components/FormInput";
 function Profile() {
   const [oldPasswordValue, setOldPasswordValue] = useState<string>("");
   const [newPasswordValue, setNewPasswordValue] = useState<string>("");
+  const [newProfileValue, setNewProfileValue] = useState<File | null>(null);
   const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
     useState<boolean>(false);
   const [isChangeProfileDialogOpen, setIsChangeProfileDialogOpen] =
@@ -24,7 +25,13 @@ function Profile() {
       <div className="container mt-5">
         <div className="row">
           <div className="col-4">
-            <div className="cursor-pointer">
+            <div
+              className="cursor-pointer"
+              role="button"
+              onClick={() => {
+                setIsChangeProfileDialogOpen(true);
+              }}
+            >
               <img
                 src={profilePic}
                 alt="User's profile picture"
@@ -87,6 +94,25 @@ function Profile() {
           type="button"
           handleClick={() => {
             setIsChangePasswordDialogOpen(false);
+          }}
+        />
+      </DialogBox>
+      <DialogBox title="Update Profile" isOpen={isChangeProfileDialogOpen}>
+        <FormInput
+          type="file"
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length !== 0) {
+              setNewProfileValue(e.target.files[0]);
+            }
+          }}
+        />
+        <Button className="mt-3 btn btn-primary" title="Submit" type="button" />
+        <Button
+          className="mt-3 ms-2 btn btn-danger"
+          title="Close"
+          type="button"
+          handleClick={() => {
+            setIsChangeProfileDialogOpen(false);
           }}
         />
       </DialogBox>

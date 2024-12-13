@@ -1,5 +1,4 @@
 import { CSSProperties, ReactNode } from "react";
-import Button from "./Button";
 
 type DialogProps = {
   isOpen: boolean;

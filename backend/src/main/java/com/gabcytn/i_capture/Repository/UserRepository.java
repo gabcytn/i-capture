@@ -53,6 +53,11 @@ public class UserRepository {
         }
     }
 
+    public void changeProfile (UUID id, String profileURL) {
+        String query = "UPDATE users SET profile_pic = ? WHERE id = ?";
+        jdbcTemplate.update(query, profileURL, id.toString());
+    }
+
     private ResultSetExtractor<User> getResultSetExtractor() {
         return (resultSet) -> {
             if (resultSet.next()) {

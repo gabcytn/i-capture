@@ -1,6 +1,7 @@
 package com.gabcytn.i_capture.Service;
 
-import com.gabcytn.i_capture.Model.AuthRequest;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,25 +17,31 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserService{
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
 
     public UserService(UserRepository userRepository,
                        AuthenticationManager authenticationManager,
                        SecurityContextRepository securityContextRepository,
-                       PasswordEncoder passwordEncoder
+                       PasswordEncoder passwordEncoder,
+                       CloudinaryService cloudinaryService
     ) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.securityContextRepository = securityContextRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cloudinaryService = cloudinaryService;
     }
 
     public User getUserById (UUID id) {
@@ -101,4 +108,20 @@ public class UserService {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public ResponseEntity<Void> changeDisplayImage (UUID id, MultipartFile file) {
+        try {
+            String[] uploadDetails = cloudinaryService.uploadImageToCloudinary(file);
+            if (uploadDetails.length > 0) {
+                userRepository.changeProfile(id, uploadDetails[0]);
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            }
+            throw new RuntimeException("Error Uploading to Cloudinary");
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

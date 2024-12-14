@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -35,7 +37,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User getUserById (int id) {
+    public User getUserById (UUID id) {
         return userRepository.findById(id);
     }
 
@@ -44,7 +46,7 @@ public class UserService {
     }
 
     public ResponseEntity<User> handleAuthentication (
-            AuthRequest loginRequest,
+            User user,
             HttpServletRequest request,
             HttpServletResponse response
     )
@@ -52,7 +54,7 @@ public class UserService {
         try
         {
             Authentication authenticationRequest =
-                    UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername(), loginRequest.getPassword());
+                    UsernamePasswordAuthenticationToken.unauthenticated(user.getUsername(), user.getPassword());
 
             Authentication authenticationResponse =
                     authenticationManager.authenticate(authenticationRequest); // throws error if not valid
@@ -64,8 +66,8 @@ public class UserService {
             // Store the SecurityContext in the SecurityContextRepository
             SecurityContextHolder.setContext(securityContext);
             securityContextRepository.saveContext(securityContext, request, response);
-            User user = getUserByUsername(loginRequest.getUsername());
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            User returnedUser = getUserByUsername(user.getUsername());
+            return new ResponseEntity<>(returnedUser, HttpStatus.OK);
         }
         catch (BadCredentialsException e)
         {
@@ -77,9 +79,26 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Void> registerUser (AuthRequest authRequest) {
+    public ResponseEntity<Void> registerUser (User user) {
         // encrypt password with bcrypt (strength of 10)
-        authRequest.setPassword(passwordEncoder.encode(authRequest.getPassword()));
-        return userRepository.save(authRequest.getUsername(), authRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user.getId(), user.getUsername(), user.getPassword());
+    }
+
+    public ResponseEntity<Void> changePassword (String id, String oldPassword, String newPassword) {
+        UUID uuid = UUID.fromString(id);
+        User user = userRepository.findById(uuid);
+        try {
+            if (passwordEncoder.matches(oldPassword, user.getPassword()) && user.getId().equals(uuid)) {
+                newPassword = passwordEncoder.encode(newPassword);
+                userRepository.changePassword(uuid, newPassword);
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            }
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            System.err.println("Error in changePassword() service");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

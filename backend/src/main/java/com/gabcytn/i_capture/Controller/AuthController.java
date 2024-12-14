@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 public class AuthController {
     private final UserService userService;
@@ -23,16 +25,25 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<User> login(
-            @RequestBody AuthRequest loginRequest,
+            @RequestBody User user,
             HttpServletRequest request,
             HttpServletResponse response)
     {
-        return userService.handleAuthentication(loginRequest, request, response);
+        return userService.handleAuthentication(user , request, response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register (@RequestBody AuthRequest registerRequest) {
-        return userService.registerUser(registerRequest);
+    public ResponseEntity<Void> register (@RequestBody User user) {
+        return userService.registerUser(user);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<Void> changePassword (@RequestBody Map<String, String> request) {
+        return userService.changePassword(
+                request.get("id"),
+                request.get("oldPassword"),
+                request.get("newPassword")
+        );
     }
 
 }

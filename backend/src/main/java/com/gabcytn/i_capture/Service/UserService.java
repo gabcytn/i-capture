@@ -73,7 +73,10 @@ public class UserService{
             // Store the SecurityContext in the SecurityContextRepository
             SecurityContextHolder.setContext(securityContext);
             securityContextRepository.saveContext(securityContext, request, response);
+
+            String currentSessionId = request.getSession().getId();
             User returnedUser = getUserByUsername(user.getUsername());
+            request.getSession().setAttribute(currentSessionId, returnedUser.getId().toString());
             return new ResponseEntity<>(returnedUser, HttpStatus.OK);
         }
         catch (BadCredentialsException e)

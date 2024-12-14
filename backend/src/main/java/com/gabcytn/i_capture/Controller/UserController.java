@@ -22,6 +22,6 @@ public class UserController {
         if (file != null && id != null) {
             return userService.changeDisplayImage(id,file);
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

@@ -26,20 +26,25 @@ public class SessionValidationAspect {
 
     @Around("execution(* com.gabcytn.i_capture.Controller.AuthController.changePassword(..)) && args(request)")
     public Object beforeChangePassword(ProceedingJoinPoint joinPoint, Map<String, String> request) throws Throwable {
-        String sessionId = servletRequest.getSession().getId();
-        String storedUuid = (String) servletRequest.getSession().getAttribute(sessionId);
-        return validateUUIDs(storedUuid, request.get("id"), joinPoint);
+        return validateUUIDs(getStoredUuid(), request.get("id"), joinPoint);
     }
 
     @Around("execution(* com.gabcytn.i_capture.Controller.UserController.changeDisplayImage(..))")
     public Object beforeChangeDisplayImage (ProceedingJoinPoint joinPoint) throws Throwable {
         String id = joinPoint.getArgs()[0].toString();
-        String sessionId = servletRequest.getSession().getId();
-        String storedUuid = (String) servletRequest.getSession().getAttribute(sessionId);
-
-        return validateUUIDs(storedUuid, id, joinPoint);
+        return validateUUIDs(getStoredUuid(), id, joinPoint);
     }
 
+    @Around("execution(* com.gabcytn.i_capture.Controller.PostsController.createPost(..))")
+    public Object beforeCreatePost (ProceedingJoinPoint joinPoint) throws Throwable {
+        String id = joinPoint.getArgs()[0].toString();
+        return validateUUIDs(getStoredUuid(), id, joinPoint);
+    }
+
+    private String getStoredUuid () {
+        String sessionId = servletRequest.getSession().getId();
+        return (String) servletRequest.getSession().getAttribute(sessionId);
+    }
 
     private Object validateUUIDs (String storedUuid, String requestUuid, ProceedingJoinPoint joinPoint) throws Throwable {
         if (storedUuid.equals(requestUuid)) {

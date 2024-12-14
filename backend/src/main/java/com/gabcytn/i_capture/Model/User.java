@@ -1,20 +1,22 @@
 package com.gabcytn.i_capture.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.UUID;
 
 public class User {
-    private int id;
+    private UUID id = UUID.randomUUID();
     private String username;
     private String password;
     private String profilePic;
 
     public User() {}
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -26,7 +28,7 @@ public class User {
         this.username = username;
     }
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getPassword() {
         return password;
     }

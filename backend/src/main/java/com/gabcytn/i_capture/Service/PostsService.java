@@ -57,11 +57,16 @@ public class PostsService {
         return postsRepository.findAllByPostOwner(user.getId());
     }
 
-    public Map<String, Object> getPost (String uuid, int postId) {
+    public ResponseEntity<Map<String, Object>> getPost (String uuid, int postId) {
         final Map<String, Object> post = postsRepository.findById(postId);
+
+        if (post.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         final boolean isLiked = likesRepository.isLikedBy(uuid, postId);
         post.put("isLiked", isLiked);
 
-        return post;
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 }

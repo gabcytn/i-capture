@@ -57,11 +57,6 @@ public class PostsRepository {
             return objectMap;
         };
 
-        try {
-            return jdbcTemplate.query(sql, extractor, id.toString());
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            return new HashMap<>();
-        }
+        return jdbcTemplate.query(sql, extractor, id.toString());
     }
 }

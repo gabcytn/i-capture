@@ -39,7 +39,7 @@ public class PostsController {
     }
 
     @GetMapping("/post/{id}")
-    public Map<String, Object> getPostDetails (@PathVariable int id, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> getPostDetails (@PathVariable int id, HttpServletRequest request) {
         String sessionId = request.getSession().getId();
         String uuid = (String) request.getSession().getAttribute(sessionId);
 

@@ -5,15 +5,23 @@ type PropTypes = {
   onUserNotFound: (b: boolean) => void;
 };
 
+type Post = {
+  id: number;
+  postOwner: string;
+  photoUrl: string;
+  photoPublicId: string;
+  likes: number;
+};
+
 function ProfilePostsLayout({ onUserNotFound }: PropTypes) {
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   const profileName = useParams().segment;
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${SERVER_URL}/post/${profileName}`, {
+        const res = await fetch(`${SERVER_URL}/posts/${profileName}`, {
           method: "GET",
           credentials: "include",
         });
@@ -46,8 +54,17 @@ function ProfilePostsLayout({ onUserNotFound }: PropTypes) {
       {posts.map((post) => {
         return (
           <div className="col-6">
-            <img src={post.photoUrl} alt="Post image" />
-            <p>Likes: {post.likes}</p>
+            <a
+              href={`/post/${post.id}`}
+              style={{ textDecoration: "none", color: "#020202" }}
+            >
+              <img
+                style={{ height: "300px" }}
+                src={post.photoUrl}
+                alt="Post image"
+              />
+              <p>Likes: {post.likes}</p>
+            </a>
           </div>
         );
       })}

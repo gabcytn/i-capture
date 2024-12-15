@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound.tsx";
 import PrivateRoute from "./route/PrivateRoute.tsx";
 import PublicRoute from "./route/PublicRoute.tsx";
 import ProfileRoute from "./route/ProfileRoute.tsx";
+import Post from "./pages/Post.tsx";
 
 const Main = () => {
   return (
@@ -16,6 +17,7 @@ const Main = () => {
           <Route path="/" element={<App />} />
           <Route path="/home" element={<App />} />
           <Route path="/:segment" element={<ProfileRoute />} />
+          <Route path="/post/:segment" element={<Post />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route element={<PublicRoute />}>

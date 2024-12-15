@@ -2,12 +2,12 @@ package com.gabcytn.i_capture.Repository;
 
 import com.gabcytn.i_capture.Model.Post;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Repository
 public class PostsRepository {
@@ -34,5 +34,34 @@ public class PostsRepository {
                 return post;
         };
         return jdbcTemplate.query(sql, rowMapper, id.toString());
+    }
+
+    public Map<String, Object> findById (Integer id) {
+        final String sql = " SELECT posts.id AS post_id, " +
+                "posts.likes, posts.photo_url, " +
+                "posts.photo_public_id, users.id AS uuid, " +
+                "users.username, users.profile_pic " +
+                "FROM posts " +
+                "JOIN users " +
+                "ON users.id = posts.post_owner " +
+                "WHERE posts.id = ?";
+
+        ResultSetExtractor<Map<String, Object>> extractor = (rs) -> {
+            Map<String, Object> objectMap = new HashMap<>();
+            if (rs.next()) {
+                objectMap.put("profile_pic", rs.getString("profile_pic"));
+                objectMap.put("post_owner", rs.getString("username"));
+                objectMap.put("photo_url", rs.getString("photo_url"));
+                objectMap.put("likes", rs.getInt("likes"));
+            }
+            return objectMap;
+        };
+
+        try {
+            return jdbcTemplate.query(sql, extractor, id.toString());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return new HashMap<>();
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.gabcytn.i_capture.Service;
 
 import com.gabcytn.i_capture.Model.Post;
 import com.gabcytn.i_capture.Model.User;
+import com.gabcytn.i_capture.Repository.LikesRepository;
 import com.gabcytn.i_capture.Repository.PostsRepository;
 import com.gabcytn.i_capture.Repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -17,15 +19,18 @@ public class PostsService {
     private final PostsRepository postsRepository;
     private final CloudinaryService cloudinaryService;
     private final UserRepository userRepository;
+    private final LikesRepository likesRepository;
 
     public PostsService(
             PostsRepository postsRepository,
             CloudinaryService cloudinaryService,
-            UserRepository userRepository
+            UserRepository userRepository,
+            LikesRepository likesRepository
     ) {
         this.postsRepository = postsRepository;
         this.cloudinaryService = cloudinaryService;
         this.userRepository = userRepository;
+        this.likesRepository = likesRepository;
     }
 
     public ResponseEntity<Void> createPost (UUID id, MultipartFile file) {
@@ -50,5 +55,13 @@ public class PostsService {
             return List.of();
 
         return postsRepository.findAllByPostOwner(user.getId());
+    }
+
+    public Map<String, Object> getPost (String uuid, int postId) {
+        final Map<String, Object> post = postsRepository.findById(postId);
+        final boolean isLiked = likesRepository.isLikedBy(uuid, postId);
+        post.put("isLiked", isLiked);
+
+        return post;
     }
 }

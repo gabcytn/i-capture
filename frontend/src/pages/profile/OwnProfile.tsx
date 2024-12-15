@@ -6,10 +6,12 @@ import Button from "../../components/Button";
 import ProfilePostsLayout from "../../layout/ProfilePostsLayout";
 import DialogBox from "../../components/DialogBox";
 import FormInput from "../../components/FormInput";
+import NotFound from "../NotFound";
 function Profile() {
   const [oldPasswordValue, setOldPasswordValue] = useState<string>("");
   const [newPasswordValue, setNewPasswordValue] = useState<string>("");
   const [newProfileValue, setNewProfileValue] = useState<File | null>(null);
+  const [userNotFound, setUserNotFound] = useState<boolean>(false);
   const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
     useState<boolean>(false);
   const [isChangeProfileDialogOpen, setIsChangeProfileDialogOpen] =
@@ -19,6 +21,9 @@ function Profile() {
   useEffect(() => {
     document.title = profileName;
   }, [profileName]);
+  if (userNotFound) {
+    return <NotFound />;
+  }
   return (
     <>
       <SideNav />
@@ -66,7 +71,7 @@ function Profile() {
           </div>
         </div>
         <hr />
-        <ProfilePostsLayout />
+        <ProfilePostsLayout onUserNotFound={setUserNotFound} />
       </div>
       <DialogBox title="Update Password" isOpen={isChangePasswordDialogOpen}>
         <FormInput

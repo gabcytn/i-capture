@@ -28,6 +28,7 @@ public class PostsRepository {
                 Post post = new Post();
                 post.setId(rs.getInt("id"));
                 post.setPostOwner(UUID.fromString(rs.getString("post_owner")));
+                post.setLikes(rs.getInt("likes"));
                 post.setPhotoUrl(rs.getString("photo_url"));
                 post.setPhotoPublicId(rs.getString("photo_public_id"));
                 return post;

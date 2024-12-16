@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import styles from "./Post.module.css";
 import Button from "../../components/Button";
+import SideNav from "../../components/SideNav/SideNav";
 
 type PostTypes = {
   profilePic: string;
@@ -17,6 +18,19 @@ function Post() {
   const postId = useParams().segment;
   const [post, setPost] = useState<PostTypes | null>(null);
   const [likeCount, setLikeCount] = useState<number>(0);
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+
+  const unlike = async () => {
+    setIsLiked(false);
+    setLikeCount((prev) => prev - 1);
+    // TODO: PUT request to unlike the post
+  };
+
+  const like = async () => {
+    setIsLiked(true);
+    setLikeCount((prev) => prev + 1);
+    // TODO: PUT request to unlike the post
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +43,7 @@ function Post() {
           const data = await res.json();
           setPost(data);
           setLikeCount(data.likes);
+          setIsLiked(data.isLiked);
           break;
         }
         case 404: {
@@ -50,44 +65,49 @@ function Post() {
     fetchData();
   }, [SERVER_URL, postId, navigate]);
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-12 d-flex my-3 align-items-center justify-content-between">
-          <div className="d-flex align-items-center">
-            <img
-              src={post?.profilePic}
-              alt="Post owner profile picture"
-              className={styles.postOwnerProfile}
-            />
-            <a href="" className={`${styles.usernameLink} ms-3`}>
-              @<strong>{post?.postOwner}</strong>
-            </a>
-          </div>
-          <div>
-            <button className="btn btn-danger">Delete</button>
-          </div>
-        </div>
-        <img src={post?.photoUrl} alt="Image post" />
-        <div className="col-12 d-flex align-items-center mt-3">
-          <form action="" className="w-100 d-flex">
-            {post?.isLiked ? (
-              <Button
-                title="Unlike"
-                className="btn btn-secondary w-25"
-                type="button"
+    <>
+      <SideNav />
+      <div className="container">
+        <div className="row">
+          <div className="col-12 d-flex my-3 align-items-center justify-content-between">
+            <div className="d-flex align-items-center">
+              <img
+                src={post?.profilePic}
+                alt="Post owner profile picture"
+                className={styles.postOwnerProfile}
               />
-            ) : (
-              <Button
-                title="Like"
-                className="btn btn-primary w-25"
-                type="button"
-              />
-            )}
-            <p className="m-0 fs-5 ms-3">{likeCount}</p>
-          </form>
+              <a href="" className={`${styles.usernameLink} ms-3`}>
+                @<strong>{post?.postOwner}</strong>
+              </a>
+            </div>
+            <div>
+              <button className="btn btn-danger">Delete</button>
+            </div>
+          </div>
+          <img src={post?.photoUrl} alt="Image post" />
+          <div className="col-12 d-flex align-items-center mt-3">
+            <form action="" className="w-100 d-flex">
+              {isLiked ? (
+                <Button
+                  title="Unlike"
+                  className="btn btn-secondary w-25"
+                  type="button"
+                  handleClick={unlike}
+                />
+              ) : (
+                <Button
+                  title="Like"
+                  className="btn btn-primary w-25"
+                  type="button"
+                  handleClick={like}
+                />
+              )}
+              <p className="m-0 fs-5 ms-3">{likeCount}</p>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

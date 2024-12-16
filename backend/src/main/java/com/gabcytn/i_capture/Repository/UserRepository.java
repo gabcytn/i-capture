@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @Repository
@@ -73,7 +74,7 @@ public class UserRepository {
             return user;
         };
 
-        return jdbcTemplate.query(query, rowMapper, username + "%");
+        return jdbcTemplate.query(query, rowMapper, username.toLowerCase() + "%");
     }
 
     private ResultSetExtractor<User> getResultSetExtractor() {

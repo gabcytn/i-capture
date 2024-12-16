@@ -7,7 +7,7 @@ import NotFound from "./pages/NotFound.tsx";
 import PrivateRoute from "./route/PrivateRoute.tsx";
 import PublicRoute from "./route/PublicRoute.tsx";
 import ProfileRoute from "./route/ProfileRoute.tsx";
-import Post from "./pages/Post.tsx";
+import Post from "./pages/post/Post.tsx";
 
 const Main = () => {
   return (

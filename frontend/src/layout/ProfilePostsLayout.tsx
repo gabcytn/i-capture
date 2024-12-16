@@ -53,7 +53,7 @@ function ProfilePostsLayout({ onUserNotFound }: PropTypes) {
     <div className="row">
       {posts.map((post) => {
         return (
-          <div className="col-6">
+          <div className="col-6" key={post.id}>
             <a
               href={`/post/${post.id}`}
               style={{ textDecoration: "none", color: "#020202" }}

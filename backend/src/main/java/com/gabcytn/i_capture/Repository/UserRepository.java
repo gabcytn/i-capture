@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -56,6 +58,22 @@ public class UserRepository {
     public void changeProfile (UUID id, String profileURL) {
         String query = "UPDATE users SET profile_pic = ? WHERE id = ?";
         jdbcTemplate.update(query, profileURL, id.toString());
+    }
+
+    public List<User> findByUsernameContainingIgnoreCase (String username) {
+        String query = "SELECT id, profile_pic, username " +
+                "FROM users " +
+                "WHERE LOWER(username) " +
+                "LIKE ?";
+        RowMapper<User> rowMapper = (rs, rowNum) -> {
+            User user = new User();
+            user.setId(UUID.fromString(rs.getString("id")));
+            user.setUsername(rs.getString("username"));
+            user.setProfilePic(rs.getString("profile_pic"));
+            return user;
+        };
+
+        return jdbcTemplate.query(query, rowMapper, username + "%");
     }
 
     private ResultSetExtractor<User> getResultSetExtractor() {

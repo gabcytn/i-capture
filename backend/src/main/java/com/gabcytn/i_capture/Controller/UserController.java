@@ -1,12 +1,13 @@
 package com.gabcytn.i_capture.Controller;
 
+import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -23,5 +24,10 @@ public class UserController {
             return userService.changeDisplayImage(id,file);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(path = "/search/{keyword}")
+    public List<User> searchFor (@PathVariable String keyword) {
+        return userService.searchFor(keyword);
     }
 }

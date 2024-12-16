@@ -77,7 +77,10 @@ function SideNav() {
               alt="profile pic"
               className={styles.sideNavProfile}
             />
-            <a className={styles.sideNavLink} href={username}>
+            <a
+              className={styles.sideNavLink}
+              href={`${window.location.origin}/${username}`}
+            >
               Profile
             </a>
           </li>

@@ -49,9 +49,9 @@ public class PostsRepository {
         ResultSetExtractor<Map<String, Object>> extractor = (rs) -> {
             Map<String, Object> objectMap = new HashMap<>();
             if (rs.next()) {
-                objectMap.put("profile_pic", rs.getString("profile_pic"));
-                objectMap.put("post_owner", rs.getString("username"));
-                objectMap.put("photo_url", rs.getString("photo_url"));
+                objectMap.put("profilePic", rs.getString("profile_pic"));
+                objectMap.put("postOwner", rs.getString("username"));
+                objectMap.put("photoUrl", rs.getString("photo_url"));
                 objectMap.put("likes", rs.getInt("likes"));
             }
             return objectMap;

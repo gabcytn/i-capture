@@ -7,17 +7,15 @@ public class Post {
     private UUID postOwner;
     private String photoUrl;
     private String photoPublicId;
-    private int likes;
 
     public Post() {
     }
 
-    public Post(int id, UUID postOwner, String photoUrl, String photoPublicId, int likes) {
+    public Post(int id, UUID postOwner, String photoUrl, String photoPublicId) {
         this.id = id;
         this.postOwner = postOwner;
         this.photoUrl = photoUrl;
         this.photoPublicId = photoPublicId;
-        this.likes = likes;
     }
 
     public int getId() {
@@ -50,13 +48,5 @@ public class Post {
 
     public void setPhotoPublicId(String photoPublicId) {
         this.photoPublicId = photoPublicId;
-    }
-
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
     }
 }

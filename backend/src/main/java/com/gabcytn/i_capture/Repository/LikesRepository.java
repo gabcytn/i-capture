@@ -26,11 +26,28 @@ public class LikesRepository {
 
         Object count = jdbcTemplate.query(sql, extractor, uuid, postId);
         if (count != null) {
-            int finalCount = (int) count;
-            return finalCount > 0;
+            return (int) count > 0;
         }
 
         return false;
+    }
+
+    public int findLikeCount (int postId) {
+        String sql = "SELECT COUNT(*) AS like_count FROM likes WHERE post_id = ?";
+
+        ResultSetExtractor<Integer> extractor = (rs) -> {
+            if (rs.next()) {
+                return rs.getInt("like_count");
+            }
+            return 0;
+        };
+
+        Object likeCount = jdbcTemplate.query(sql, extractor, postId);
+        if (likeCount != null) {
+            return (int) likeCount;
+        }
+
+        return 0;
     }
 
     public void like (UUID uuid, int postId) {

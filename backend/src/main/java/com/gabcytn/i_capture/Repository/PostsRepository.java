@@ -28,7 +28,6 @@ public class PostsRepository {
                 Post post = new Post();
                 post.setId(rs.getInt("id"));
                 post.setPostOwner(UUID.fromString(rs.getString("post_owner")));
-                post.setLikes(rs.getInt("likes"));
                 post.setPhotoUrl(rs.getString("photo_url"));
                 post.setPhotoPublicId(rs.getString("photo_public_id"));
                 return post;
@@ -38,7 +37,7 @@ public class PostsRepository {
 
     public Map<String, Object> findById (Integer id) {
         final String sql = " SELECT posts.id AS post_id, " +
-                "posts.likes, posts.photo_url, " +
+                "posts.photo_url, " +
                 "posts.photo_public_id, users.id AS uuid, " +
                 "users.username, users.profile_pic " +
                 "FROM posts " +
@@ -52,7 +51,6 @@ public class PostsRepository {
                 objectMap.put("profilePic", rs.getString("profile_pic"));
                 objectMap.put("postOwner", rs.getString("username"));
                 objectMap.put("photoUrl", rs.getString("photo_url"));
-                objectMap.put("likes", rs.getInt("likes"));
             }
             return objectMap;
         };

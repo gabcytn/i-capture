@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -61,11 +62,13 @@ public class PostsService {
         final Map<String, Object> post = postsRepository.findById(postId);
 
         if (post.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new HashMap<>(), HttpStatus.OK);
         }
 
         final boolean isLiked = likesRepository.isLikedBy(uuid, postId);
+        final int likeCount = likesRepository.findLikeCount(postId);
         post.put("isLiked", isLiked);
+        post.put("likes", likeCount);
 
         return new ResponseEntity<>(post, HttpStatus.OK);
     }

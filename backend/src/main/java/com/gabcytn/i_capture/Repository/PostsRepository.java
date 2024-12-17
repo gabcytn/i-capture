@@ -57,14 +57,4 @@ public class PostsRepository {
 
         return jdbcTemplate.query(sql, extractor, id.toString());
     }
-
-    public void like (int postId) {
-        String sql = "UPDATE posts SET likes = likes + 1 WHERE id = ?";
-        jdbcTemplate.update(sql, postId);
-    }
-
-    public void unlike (int postId) {
-        String sql = "UPDATE posts SET likes = likes - 1 WHERE id = ?";
-        jdbcTemplate.update(sql, postId);
-    }
 }

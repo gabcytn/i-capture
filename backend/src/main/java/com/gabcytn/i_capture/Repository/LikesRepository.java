@@ -4,6 +4,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public class LikesRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -29,5 +31,15 @@ public class LikesRepository {
         }
 
         return false;
+    }
+
+    public void like (UUID uuid, int postId) {
+        String sql = "INSERT INTO likes (post_id, liker_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, postId, uuid.toString());
+    }
+
+    public void unlike (UUID uuid, int postId) {
+        String sql = "DELETE FROM likes WHERE post_id = ? AND liker_id = ?";
+        jdbcTemplate.update(sql, postId, uuid.toString());
     }
 }

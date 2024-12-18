@@ -62,8 +62,6 @@ public class UserService{
             User user = userRepository.findByUsername(username);
             if (user == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {
-                System.err.println("user is not null");
             }
             user.setFollowerCount(followersRepository.findFollowerCountOf(user.getId()));
             user.setFollowingCount(followersRepository.findFollowingCountOf(user.getId()));

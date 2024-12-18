@@ -2,12 +2,14 @@ package com.gabcytn.i_capture.Controller;
 
 import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -32,7 +34,10 @@ public class UserController {
     }
 
     @GetMapping(path = "/{username}")
-    public ResponseEntity<User> getUser (@PathVariable String username) {
-        return userService.getUserCredentialsByUsername(username);
+    public ResponseEntity<Map<String, Object>> getUser (
+            @PathVariable String username,
+            HttpServletRequest request
+    ) {
+        return userService.getUserCredentialsByUsername(username, request);
     }
 }

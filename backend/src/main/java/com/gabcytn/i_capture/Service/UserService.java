@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,17 +58,42 @@ public class UserService{
         return userRepository.findByUsername(username);
     }
 
-    public ResponseEntity<User> getUserCredentialsByUsername (String username) {
+    public ResponseEntity<Map<String, Object>> getUserCredentialsByUsername (String username, HttpServletRequest request) {
         try {
             User user = userRepository.findByUsername(username);
             if (user == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-            user.setFollowerCount(followersRepository.findFollowerCountOf(user.getId()));
-            user.setFollowingCount(followersRepository.findFollowingCountOf(user.getId()));
-            return new ResponseEntity<>(user, HttpStatus.OK);
+            Map<String, Object> userMapping = new HashMap<>();
+            userMapping.put("username", user.getUsername());
+            userMapping.put("profilePic", user.getProfilePic());
+            userMapping.put("followers", followersRepository.findFollowerCountOf(user.getId()));
+            userMapping.put("followings", followersRepository.findFollowingCountOf(user.getId()));
+            userMapping.put("uuid", user.getId());
+
+            String sessionId = request.getSession().getId();
+            String requestUuid = (String) request.getSession().getAttribute(sessionId);
+            if (!requestUuid.equals(user.getId().toString())) {
+                return getUserCredentialsOtherProfile(userMapping, requestUuid, user.getId().toString());
+            }
+            userMapping.put("isOwnProfile", true);
+            return new ResponseEntity<>(userMapping, HttpStatus.OK);
         } catch (Exception e) {
             System.err.println("Error retrieving user credentials");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private ResponseEntity<Map<String, Object>> getUserCredentialsOtherProfile
+            (Map<String, Object> userMapping, String requestUuid, String searchUuid)
+    {
+        try {
+            userMapping.put("isFollowing", followersRepository.isFollowedBy(searchUuid, requestUuid));
+            userMapping.put("isOwnProfile", false);
+            return new ResponseEntity<>(userMapping, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error getting user credentials of other profile");
             System.err.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

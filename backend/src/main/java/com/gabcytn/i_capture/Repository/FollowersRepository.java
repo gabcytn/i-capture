@@ -67,6 +67,30 @@ public class FollowersRepository {
         return resultSetExtractor(uuid, sql);
     }
 
+    public boolean isFollowedBy (String followingId, String followerId) {
+        String sql = "SELECT COUNT(*) AS count FROM followers WHERE following_id = ? AND follower_id = ?";
+
+        ResultSetExtractor<Integer> extractor = rs -> {
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+            return 0;
+        };
+
+        Object object = jdbcTemplate.query(sql, extractor, followingId, followerId);
+        if (object == null)
+            throw new Error("Error getting is followed by");
+        else if ((int) object == 1) {
+            return true;
+        }
+        else if ((int) object == 0) {
+            return false;
+        }
+        else {
+            throw new Error("Error value generated is isFollowedBy");
+        }
+    }
+
     private RowMapper<User> rowMapper () {
         return (rs, rowNum) -> {
             User user = new User();

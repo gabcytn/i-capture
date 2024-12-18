@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class LoggingAspect {
     private final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Before("execution(* com.gabcytn.i_capture.*(..))")
+    @Before("execution(* com.gabcytn.i_capture..*(..))")
     public void logCalledMethodsName(JoinPoint joinPoint) {
         LOGGER.info("Method called: {}. Class: {}. Arguments: {}. Timestamp: {}",
                 joinPoint.getSignature().getName(),

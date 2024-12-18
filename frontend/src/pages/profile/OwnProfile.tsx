@@ -13,7 +13,35 @@ type ProfileProps = {
     followings: number;
   };
 };
+async function handleChangeProfilePic(serverUrl: string, file: File | null) {
+  if (file === null) {
+    alert("File can't be null");
+    return;
+  }
+  const formData = new FormData();
+  formData.append("id", sessionStorage.getItem("id")!);
+  formData.append("file", file);
+  try {
+    const res = await fetch(`${serverUrl}/profile-image`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+    if (res.status === 202) {
+      location.reload();
+      return;
+    }
+
+    throw new Error(`Error status code of ${res.status}`);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error("Error uploading image");
+      console.error(e.message);
+    }
+  }
+}
 function Profile({ userDetails }: ProfileProps) {
+  const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   document.title = userDetails.username;
   const [postsCount, setPostsCount] = useState<number>(0);
   const [oldPasswordValue, setOldPasswordValue] = useState<string>("");
@@ -110,7 +138,14 @@ function Profile({ userDetails }: ProfileProps) {
             }
           }}
         />
-        <Button className="mt-3 btn btn-primary" title="Submit" type="button" />
+        <Button
+          className="mt-3 btn btn-primary"
+          title="Submit"
+          type="button"
+          handleClick={() => {
+            handleChangeProfilePic(SERVER_URL, newProfileValue);
+          }}
+        />
         <Button
           className="mt-3 ms-2 btn btn-danger"
           title="Close"

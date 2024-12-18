@@ -18,18 +18,24 @@ public class FollowersService {
     }
 
     public ResponseEntity<List<User>> getFollowersOf (UUID uuid) {
-        final List<User> listOfFollowers = followersRepository.findFollowersById(uuid);
-        if (listOfFollowers.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(listOfFollowers, HttpStatus.OK);
+        try {
+            final List<User> listOfFollowers = followersRepository.findFollowersById(uuid);
+            return new ResponseEntity<>(listOfFollowers, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error getting followers list");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<List<User>> getFollowingsOf (UUID uuid) {
-        final List<User> listOfFollowers = followersRepository.findFollowingsById(uuid);
-        if (listOfFollowers.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(listOfFollowers, HttpStatus.OK);
+        try {
+            final List<User> listOfFollowers = followersRepository.findFollowingsById(uuid);
+            return new ResponseEntity<>(listOfFollowers, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error getting followings list");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

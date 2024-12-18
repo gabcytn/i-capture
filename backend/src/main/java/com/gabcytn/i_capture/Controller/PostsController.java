@@ -31,11 +31,7 @@ public class PostsController {
 
     @GetMapping("/posts/{username}")
     public ResponseEntity<List<Post>> getPostsBy (@PathVariable String username) {
-        List<Post> postsList = postsService.getPostsByPostOwner(username);
-        if (postsList.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(postsList, HttpStatus.OK);
+        return postsService.getPostsByPostOwner(username);
     }
 
     @GetMapping("/post/{id}")

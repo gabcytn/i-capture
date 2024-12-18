@@ -50,12 +50,19 @@ public class PostsService {
         }
     }
 
-    public List<Post> getPostsByPostOwner (String username) {
-        User user = userRepository.findByUsername(username);
-        if (user == null)
-            return List.of();
+    public ResponseEntity<List<Post>> getPostsByPostOwner (String username) {
+        try {
+            User user = userRepository.findByUsername(username);
+            if (user == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        return postsRepository.findAllByPostOwner(user.getId());
+            List<Post> postList = postsRepository.findAllByPostOwner(user.getId());
+            return new ResponseEntity<>(postList, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error retrieving posts");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<Map<String, Object>> getPost (String uuid, int postId) {

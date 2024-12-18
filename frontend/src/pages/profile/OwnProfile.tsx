@@ -40,6 +40,47 @@ async function handleChangeProfilePic(serverUrl: string, file: File | null) {
     }
   }
 }
+async function handlePasswordChange(
+  serverUrl: string,
+  oldPassword: string,
+  newPassword: string,
+  setIsDialogOpen: (value: boolean) => void,
+) {
+  if (oldPassword === "" || newPassword === "") {
+    alert("Fields can't be blank");
+    return;
+  }
+  try {
+    const res = await fetch(`${serverUrl}/change-password`, {
+      method: "PUT",
+      body: JSON.stringify({
+        id: sessionStorage.getItem("id"),
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      }),
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    switch (res.status) {
+      case 400:
+        alert("Incorrect password");
+        return;
+      case 202:
+        setIsDialogOpen(false);
+        alert("Successfully changed password");
+        return;
+      default:
+        throw new Error(`Error status code of ${res.status}`);
+    }
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error("Error updating password");
+      console.error(e.message);
+    }
+  }
+}
 function Profile({ userDetails }: ProfileProps) {
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   document.title = userDetails.username;
@@ -119,7 +160,21 @@ function Profile({ userDetails }: ProfileProps) {
           className="mt-2"
           placeholder="New password"
         />
-        <Button className="mt-3 btn btn-primary" title="Submit" type="button" />
+        <Button
+          className="mt-3 btn btn-primary"
+          title="Submit"
+          type="button"
+          handleClick={() => {
+            handlePasswordChange(
+              SERVER_URL,
+              oldPasswordValue,
+              newPasswordValue,
+              setIsChangePasswordDialogOpen,
+            );
+            setOldPasswordValue("");
+            setNewPasswordValue("");
+          }}
+        />
         <Button
           className="mt-3 ms-2 btn btn-danger"
           title="Close"

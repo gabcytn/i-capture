@@ -6,6 +6,40 @@ import DialogBox from "../DialogBox";
 import Button from "../Button";
 import FormInput from "../FormInput";
 
+async function handleCreatePost(
+  event: React.FormEvent<HTMLFormElement>,
+  serverUrl: string,
+  file: File | null,
+) {
+  event.preventDefault();
+  if (file === null) {
+    alert("Post can't be blank");
+    return;
+  }
+  const formData = new FormData();
+  formData.append("id", sessionStorage.getItem("id")!);
+  formData.append("file", file);
+  try {
+    const res = await fetch(`${serverUrl}/post/create`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    if (res.status === 201) {
+      alert("Post created");
+      location.reload();
+      return;
+    }
+    throw new Error(`Error status code of: ${res.status}`);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error("Error creating post");
+      console.error(e.message);
+    }
+  }
+}
+
 function SideNav() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState<boolean>(false);
   const [isSearchDialogOpen, setIsSearchDialogOpen] = useState<boolean>(false);
@@ -125,10 +159,15 @@ function SideNav() {
               setFile(e.target.files[0]);
           }}
         />
-        <div className="d-flex mt-3">
+        <form
+          className="d-flex mt-3"
+          onSubmit={(event) => {
+            handleCreatePost(event, url, file);
+          }}
+        >
           <Button
             title="Submit"
-            type="button"
+            type="submit"
             className="btn btn-primary me-2"
           />
           <Button
@@ -137,7 +176,7 @@ function SideNav() {
             type="button"
             handleClick={closeCreateDialog}
           />
-        </div>
+        </form>
       </DialogBox>
     </>
   );

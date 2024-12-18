@@ -79,6 +79,35 @@ async function handlePasswordChange(
   }
 }
 
+async function fetchFollows(
+  serverUrl: string,
+  endpoint: string,
+  list: Follows[],
+) {
+  if (list.length !== 0) return;
+  try {
+    const res = await fetch(`${serverUrl}/${endpoint}`, {
+      method: "GET",
+      credentials: "include",
+    });
+    if (!res.ok) {
+      throw new Error(`Error status code of: ${res.status}`);
+    }
+    const data = await res.json();
+    return data;
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(e.message);
+      console.error("Error fetching followers/followings list");
+    }
+  }
+}
+
+type Follows = {
+  id: string;
+  profilePic: string;
+  username: string;
+};
 type UserDetails = {
   username: string;
   profilePic: string;
@@ -88,6 +117,8 @@ type UserDetails = {
 };
 function Profile() {
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+  const [followersList, setFollowersList] = useState<Follows[]>([]);
+  const [followingsList, setFollowingsList] = useState<Follows[]>([]);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
   const [isOwnProfile, setIsOwnProfile] = useState<boolean | null>(null);
@@ -100,6 +131,8 @@ function Profile() {
     useState<boolean>(false);
   const [isChangeProfileDialogOpen, setIsChangeProfileDialogOpen] =
     useState<boolean>(false);
+  const [isFollowerDialogOpen, setIsFollowerDialogOpen] = useState(false);
+  const [isFollowingDialogOpen, setIsFollowingDialogOpen] = useState(false);
   const segment = useParams().segment;
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -116,7 +149,6 @@ function Profile() {
             break;
           case 200: {
             const data = await res.json();
-            console.log(data);
             setUserDetails(data);
             setIsNotFound(false);
             setIsOwnProfile(data.isOwnProfile);
@@ -189,10 +221,44 @@ function Profile() {
 
               <div className="d-flex gap-5 mt-3">
                 <p>{postsCount} posts</p>
-                <p id="followers-list" role="button">
+                <p
+                  role="button"
+                  onClick={async () => {
+                    if (isOwnProfile) {
+                      const data = await fetchFollows(
+                        SERVER_URL,
+                        "followers",
+                        followersList,
+                      );
+                      if (data === null || data === undefined) {
+                        setIsFollowerDialogOpen(true);
+                        return;
+                      }
+                      setFollowersList(data);
+                      setIsFollowerDialogOpen(true);
+                    }
+                  }}
+                >
                   {userDetails.followers} followers
                 </p>
-                <p id="followings-list" role="button">
+                <p
+                  role="button"
+                  onClick={async () => {
+                    if (isOwnProfile) {
+                      const data = await fetchFollows(
+                        SERVER_URL,
+                        "followings",
+                        followingsList,
+                      );
+                      if (data === null || data === undefined) {
+                        setIsFollowingDialogOpen(true);
+                        return;
+                      }
+                      setFollowingsList(data);
+                      setIsFollowingDialogOpen(true);
+                    }
+                  }}
+                >
                   {userDetails.followings} following
                 </p>
               </div>
@@ -202,6 +268,60 @@ function Profile() {
         <hr />
         <ProfilePostsLayout setPostsCount={setPostsCount} />
       </div>
+      <DialogBox isOpen={isFollowingDialogOpen} title="Following">
+        {followingsList.map((item) => {
+          return (
+            <div key={item.id} className={styles.followsItem}>
+              <img
+                src={item.profilePic}
+                alt=""
+                className={styles.followsItemImage}
+              />
+              <a
+                href={`${location.origin}/${item.username}`}
+                className={styles.followsItemAnchor}
+              >
+                @{item.username}
+              </a>
+            </div>
+          );
+        })}
+        <Button
+          title="Close"
+          className="btn btn-danger mt-3"
+          type="button"
+          handleClick={() => {
+            setIsFollowingDialogOpen(false);
+          }}
+        />
+      </DialogBox>
+      <DialogBox isOpen={isFollowerDialogOpen} title="Followers">
+        {followersList.map((item) => {
+          return (
+            <div key={item.id} className={styles.followsItem}>
+              <img
+                src={item.profilePic}
+                alt=""
+                className={styles.followsItemImage}
+              />
+              <a
+                href={`${location.origin}/${item.username}`}
+                className={styles.followsItemAnchor}
+              >
+                @{item.username}
+              </a>
+            </div>
+          );
+        })}
+        <Button
+          title="Close"
+          className="btn btn-danger mt-3"
+          type="button"
+          handleClick={() => {
+            setIsFollowerDialogOpen(false);
+          }}
+        />
+      </DialogBox>
       <DialogBox title="Update Password" isOpen={isChangePasswordDialogOpen}>
         <FormInput
           type="password"

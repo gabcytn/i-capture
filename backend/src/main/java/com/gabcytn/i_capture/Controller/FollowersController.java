@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,6 +28,16 @@ public class FollowersController {
     @GetMapping("/followings")
     public ResponseEntity<List<User>> findFollowingsOf (HttpServletRequest request) {
         return followersService.getFollowingsOf(getSessionUuid(request));
+    }
+
+    @PostMapping("/follow/{username}")
+    public ResponseEntity<Void> follow (@PathVariable String username, HttpServletRequest request) {
+        return followersService.follow(username, request);
+    }
+
+    @PostMapping("/unfollow/{username}")
+    public ResponseEntity<Void> unfollow (@PathVariable String username, HttpServletRequest request) {
+        return followersService.unfollow(username, request);
     }
 
     private UUID getSessionUuid (HttpServletRequest request) {

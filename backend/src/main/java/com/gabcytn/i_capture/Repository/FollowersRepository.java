@@ -91,6 +91,17 @@ public class FollowersRepository {
         }
     }
 
+    public void follow (UUID followingId, UUID followerId) {
+        String sql = "INSERT INTO followers (following_id, follower_id) " +
+                "VALUES (?, ?)";
+        jdbcTemplate.update(sql, followingId.toString(), followerId.toString());
+    }
+
+    public void unfollow (UUID followingId, UUID followerId) {
+        String sql = "DELETE FROM followers WHERE following_id = ? AND follower_id = ?";
+        jdbcTemplate.update(sql, followingId.toString(), followerId.toString());
+    }
+
     private RowMapper<User> rowMapper () {
         return (rs, rowNum) -> {
             User user = new User();

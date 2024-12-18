@@ -16,15 +16,6 @@ import java.util.Arrays;
 public class LoggingAspect {
     private final Logger LOGGER = LoggerFactory.getLogger(LoggingAspect.class);
 
-    @Before("execution(* com.gabcytn.i_capture..*(..))")
-    public void logCalledMethodsName(JoinPoint joinPoint) {
-        LOGGER.info("Method called: {}. Class: {}. Arguments: {}. Timestamp: {}",
-                joinPoint.getSignature().getName(),
-                joinPoint.getTarget().getClass().getName(),
-                Arrays.toString(joinPoint.getArgs()),
-                LocalDateTime.now());
-    }
-
     @AfterThrowing(pointcut = "execution(* com.gabcytn.i_capture..*(..))", throwing = "exception")
     public void logErrorsMethodName(JoinPoint joinPoint, Throwable exception) {
         LOGGER.error("Exception in method: {}. Class: {}. Arguments: {}. Exception: {}. Timestamp: {}",

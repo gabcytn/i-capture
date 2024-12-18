@@ -6,8 +6,8 @@ import Register from "./pages/auth/Register.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import PrivateRoute from "./route/PrivateRoute.tsx";
 import PublicRoute from "./route/PublicRoute.tsx";
-import ProfileRoute from "./route/ProfileRoute.tsx";
 import Post from "./pages/post/Post.tsx";
+import Profile from "./pages/profile/Profile.tsx";
 
 const Main = () => {
   return (
@@ -16,7 +16,7 @@ const Main = () => {
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<App />} />
           <Route path="/home" element={<App />} />
-          <Route path="/:segment" element={<ProfileRoute />} />
+          <Route path="/:segment" element={<Profile />} />
           <Route path="/post/:segment" element={<Post />} />
           <Route path="*" element={<NotFound />} />
         </Route>

@@ -1,0 +1,12 @@
+.username {
+	align-self: center;
+	margin: 0;
+	font-weight: 600;
+}
+
+.profileImage {
+	width: 10rem;
+	height: 10rem;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}

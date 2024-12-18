@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-type PropTypes = {
-  onUserNotFound: (b: boolean) => void;
-};
-
 type Post = {
   id: number;
   postOwner: string;
   photoUrl: string;
   photoPublicId: string;
-  likes: number;
 };
 
-function ProfilePostsLayout({ onUserNotFound }: PropTypes) {
+type PropType = {
+  setPostsCount: (e: number) => void;
+};
+
+function ProfilePostsLayout({ setPostsCount }: PropType) {
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   const profileName = useParams().segment;
   const [posts, setPosts] = useState<Post[]>([]);
@@ -26,25 +25,21 @@ function ProfilePostsLayout({ onUserNotFound }: PropTypes) {
           credentials: "include",
         });
 
-        switch (res.status) {
-          case 404:
-            onUserNotFound(true);
-            break;
-
-          case 200:
-            setPosts(await res.json());
-            break;
-
-          default:
-            throw new Error(`Status code: ${res.status}`);
+        if (res.status !== 200) {
+          setPosts([]);
+          throw new Error(`Status code of ${res.status}`);
         }
+
+        const data = await res.json();
+        setPosts(data);
+        setPostsCount(data.length);
       } catch (e) {
         if (e instanceof Error) console.error(e.message);
       }
     };
 
     fetchData();
-  }, [SERVER_URL, profileName, onUserNotFound]);
+  }, [SERVER_URL, profileName, setPostsCount]);
 
   if (posts.length === 0) {
     return <h3 className="text-center">No Posts Yet</h3>;
@@ -63,7 +58,6 @@ function ProfilePostsLayout({ onUserNotFound }: PropTypes) {
                 src={post.photoUrl}
                 alt="Post image"
               />
-              <p>Likes: {post.likes}</p>
             </a>
           </div>
         );

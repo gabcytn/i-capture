@@ -1,29 +1,28 @@
 import { useState } from "react";
-import { useParams } from "react-router";
 import SideNav from "../../components/SideNav/SideNav";
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties } from "react";
 import Button from "../../components/Button";
 import ProfilePostsLayout from "../../layout/ProfilePostsLayout";
 import DialogBox from "../../components/DialogBox";
 import FormInput from "../../components/FormInput";
-import NotFound from "../NotFound";
-function Profile() {
+type ProfileProps = {
+  userDetails: {
+    username: string;
+    profilePic: string;
+    followers: number;
+    followings: number;
+  };
+};
+function Profile({ userDetails }: ProfileProps) {
+  document.title = userDetails.username;
+  const [postsCount, setPostsCount] = useState<number>(0);
   const [oldPasswordValue, setOldPasswordValue] = useState<string>("");
   const [newPasswordValue, setNewPasswordValue] = useState<string>("");
   const [newProfileValue, setNewProfileValue] = useState<File | null>(null);
-  const [userNotFound, setUserNotFound] = useState<boolean>(false);
   const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
     useState<boolean>(false);
   const [isChangeProfileDialogOpen, setIsChangeProfileDialogOpen] =
     useState<boolean>(false);
-  const profileName = useParams().segment!;
-  const profilePic = sessionStorage.getItem("profilePic")!;
-  useEffect(() => {
-    document.title = profileName;
-  }, [profileName]);
-  if (userNotFound) {
-    return <NotFound />;
-  }
   return (
     <>
       <SideNav />
@@ -38,7 +37,7 @@ function Profile() {
               }}
             >
               <img
-                src={profilePic}
+                src={userDetails.profilePic}
                 alt="User's profile picture"
                 style={profileImgStyles}
               />
@@ -47,7 +46,7 @@ function Profile() {
           <div className="col-8">
             <div>
               <div className="d-flex gap-3">
-                <p style={usernameStyles}>{`@${profileName}`}</p>
+                <p style={usernameStyles}>{`@${userDetails.username}`}</p>
                 <Button
                   title="Change password"
                   className="btn btn-secondary"
@@ -59,19 +58,19 @@ function Profile() {
               </div>
 
               <div className="d-flex gap-5 mt-3">
-                <p>2 posts</p>
+                <p>{postsCount} posts</p>
                 <p id="followers-list" role="button">
-                  2 followers
+                  {userDetails.followers} followers
                 </p>
                 <p id="followings-list" role="button">
-                  2 following
+                  {userDetails.followings} following
                 </p>
               </div>
             </div>
           </div>
         </div>
         <hr />
-        <ProfilePostsLayout onUserNotFound={setUserNotFound} />
+        <ProfilePostsLayout setPostsCount={setPostsCount} />
       </div>
       <DialogBox title="Update Password" isOpen={isChangePasswordDialogOpen}>
         <FormInput

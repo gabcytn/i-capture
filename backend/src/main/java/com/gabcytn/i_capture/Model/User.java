@@ -10,6 +10,10 @@ public class User {
     private String password;
     private String profilePic;
 
+    // Additional properties *not a column in db table*
+    private int followerCount;
+    private int followingCount;
+
     public User() {}
 
     public UUID getId() {
@@ -43,5 +47,21 @@ public class User {
 
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
     }
 }

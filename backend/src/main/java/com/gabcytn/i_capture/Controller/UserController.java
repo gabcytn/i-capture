@@ -30,4 +30,9 @@ public class UserController {
     public List<User> searchFor (@PathVariable String keyword) {
         return userService.searchFor(keyword);
     }
+
+    @GetMapping(path = "/{username}")
+    public ResponseEntity<User> getUser (@PathVariable String username) {
+        return userService.getUserCredentialsByUsername(username);
+    }
 }

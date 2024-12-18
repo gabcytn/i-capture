@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @Repository
@@ -88,7 +87,7 @@ public class UserRepository {
 
                 return user;
             }
-            return new User();
+            return null;
         };
     }
 }

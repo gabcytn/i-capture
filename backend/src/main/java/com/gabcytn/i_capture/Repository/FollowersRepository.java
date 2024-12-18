@@ -2,6 +2,7 @@ package com.gabcytn.i_capture.Repository;
 
 import com.gabcytn.i_capture.Model.User;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +33,38 @@ public class FollowersRepository {
                 "ON users.id = followers.following_id " +
                 "WHERE follower_id = ?";
         return jdbcTemplate.query(sql, rowMapper(), uuid.toString());
+    }
+
+    public int findFollowerCountOf (UUID uuid) {
+        String sql = "SELECT COUNT(*) AS count FROM followers " +
+                "WHERE following_id = ?";
+
+        return resultSetExtractor(uuid, sql);
+    }
+
+    private int resultSetExtractor(UUID uuid, String sql) {
+        ResultSetExtractor<Integer> extractor = rs -> {
+            if (rs.next()) {
+                return rs.getInt("count");
+            }
+
+            return 0;
+        };
+
+        Object followerCount = jdbcTemplate.query(sql, extractor, uuid.toString());
+        if (followerCount != null) {
+            return (int) followerCount;
+        }
+
+        return 0;
+    }
+
+
+    public int findFollowingCountOf (UUID uuid) {
+        String sql = "SELECT COUNT(*) AS count FROM followers " +
+                "WHERE follower_id = ?";
+
+        return resultSetExtractor(uuid, sql);
     }
 
     private RowMapper<User> rowMapper () {

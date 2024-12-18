@@ -3,6 +3,7 @@ package com.gabcytn.i_capture.Service;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.gabcytn.i_capture.Model.User;
+import com.gabcytn.i_capture.Repository.FollowersRepository;
 import com.gabcytn.i_capture.Repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ import java.util.UUID;
 @Service
 public class UserService{
     private final UserRepository userRepository;
+    private final FollowersRepository followersRepository;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
     private final PasswordEncoder passwordEncoder;
@@ -36,9 +38,11 @@ public class UserService{
                        AuthenticationManager authenticationManager,
                        SecurityContextRepository securityContextRepository,
                        PasswordEncoder passwordEncoder,
-                       CloudinaryService cloudinaryService
+                       CloudinaryService cloudinaryService,
+                       FollowersRepository followersRepository
     ) {
         this.userRepository = userRepository;
+        this.followersRepository = followersRepository;
         this.authenticationManager = authenticationManager;
         this.securityContextRepository = securityContextRepository;
         this.passwordEncoder = passwordEncoder;
@@ -51,6 +55,24 @@ public class UserService{
 
     public User getUserByUsername (String username) {
         return userRepository.findByUsername(username);
+    }
+
+    public ResponseEntity<User> getUserCredentialsByUsername (String username) {
+        try {
+            User user = userRepository.findByUsername(username);
+            if (user == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                System.err.println("user is not null");
+            }
+            user.setFollowerCount(followersRepository.findFollowerCountOf(user.getId()));
+            user.setFollowingCount(followersRepository.findFollowingCountOf(user.getId()));
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            System.err.println("Error retrieving user credentials");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     public ResponseEntity<User> handleAuthentication (

@@ -48,7 +48,12 @@ public class FollowersService {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        // cannot follow oneself
+        else if (user.getId().toString().equals(getStoredUuid(request).toString())) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
         final boolean isFollowing = isFollowing(request, user.getId().toString());
+        // cannot follow already following
         if (isFollowing) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -63,6 +68,7 @@ public class FollowersService {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         final boolean isFollowing = isFollowing(request, user.getId().toString());
+        // cannot unfollow not following
         if (!isFollowing) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }

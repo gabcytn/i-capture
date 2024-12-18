@@ -17,6 +17,10 @@ public class LikesService {
 
     public ResponseEntity<Void> like (UUID uuid, int postId) {
         try {
+            // returns 409 conflict if user is liking a post already liked
+            if (likesRepository.isLikedBy(uuid.toString(), postId)) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
             likesRepository.like(uuid, postId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
@@ -28,6 +32,10 @@ public class LikesService {
 
     public ResponseEntity<Void> unlike (UUID uuid, int postId) {
         try {
+            // returns 409 conflict if user is unliking a post not liked in the first place
+            if (!likesRepository.isLikedBy(uuid.toString(), postId)) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
             likesRepository.unlike(uuid, postId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {

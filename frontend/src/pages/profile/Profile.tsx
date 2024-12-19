@@ -3,111 +3,13 @@ import { useState, useEffect } from "react";
 import SideNav from "../../components/SideNav/SideNav";
 import Button from "../../components/Button";
 import ProfilePostsLayout from "../../layout/ProfilePostsLayout";
-import DialogBox from "../../components/DialogBox";
-import FormInput from "../../components/FormInput";
+import FollowDialog from "./dialogs/follow/FollowDialog";
+import UpdatePassword from "./dialogs/UpdatePassword";
+import UpdateProfile from "./dialogs/UpdateProfile";
 import { useParams } from "react-router";
 import NotFound from "../NotFound";
 import Loading from "../loading/Loading";
 
-async function handleChangeProfilePic(serverUrl: string, file: File | null) {
-  if (file === null) {
-    alert("File can't be null");
-    return;
-  }
-  const formData = new FormData();
-  formData.append("id", sessionStorage.getItem("id")!);
-  formData.append("file", file);
-  try {
-    const res = await fetch(`${serverUrl}/profile-image`, {
-      method: "POST",
-      body: formData,
-      credentials: "include",
-    });
-    if (res.status === 202) {
-      location.reload();
-      return;
-    }
-
-    throw new Error(`Error status code of ${res.status}`);
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error("Error uploading image");
-      console.error(e.message);
-    }
-  }
-}
-
-async function handlePasswordChange(
-  serverUrl: string,
-  oldPassword: string,
-  newPassword: string,
-  setIsDialogOpen: (value: boolean) => void,
-) {
-  if (oldPassword === "" || newPassword === "") {
-    alert("Fields can't be blank");
-    return;
-  }
-  try {
-    const res = await fetch(`${serverUrl}/change-password`, {
-      method: "PUT",
-      body: JSON.stringify({
-        id: sessionStorage.getItem("id"),
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-      }),
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    switch (res.status) {
-      case 400:
-        alert("Incorrect password");
-        return;
-      case 202:
-        setIsDialogOpen(false);
-        alert("Successfully changed password");
-        return;
-      default:
-        throw new Error(`Error status code of ${res.status}`);
-    }
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error("Error updating password");
-      console.error(e.message);
-    }
-  }
-}
-
-async function fetchFollows(
-  serverUrl: string,
-  endpoint: string,
-  list: Follows[],
-) {
-  if (list.length !== 0) return;
-  try {
-    const res = await fetch(`${serverUrl}/${endpoint}`, {
-      method: "GET",
-      credentials: "include",
-    });
-    if (!res.ok) {
-      throw new Error(`Error status code of: ${res.status}`);
-    }
-    const data = await res.json();
-    return data;
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(e.message);
-      console.error("Error fetching followers/followings list");
-    }
-  }
-}
-
-type Follows = {
-  id: string;
-  profilePic: string;
-  username: string;
-};
 type UserDetails = {
   username: string;
   profilePic: string;
@@ -117,44 +19,45 @@ type UserDetails = {
 };
 function Profile() {
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-  const [followersList, setFollowersList] = useState<Follows[]>([]);
-  const [followingsList, setFollowingsList] = useState<Follows[]>([]);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [isNotFound, setIsNotFound] = useState<boolean>(false);
   const [isOwnProfile, setIsOwnProfile] = useState<boolean | null>(null);
   const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
+  const [isDialogFollowers, setIsDialogFollowers] = useState<boolean | null>(
+    null,
+  );
   const [postsCount, setPostsCount] = useState<number>(0);
-  const [oldPasswordValue, setOldPasswordValue] = useState<string>("");
-  const [newPasswordValue, setNewPasswordValue] = useState<string>("");
-  const [newProfileValue, setNewProfileValue] = useState<File | null>(null);
   const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
     useState<boolean>(false);
   const [isChangeProfileDialogOpen, setIsChangeProfileDialogOpen] =
     useState<boolean>(false);
-  const [isFollowerDialogOpen, setIsFollowerDialogOpen] = useState(false);
-  const [isFollowingDialogOpen, setIsFollowingDialogOpen] = useState(false);
+  const [isFollowDialogOpen, setIsFollowDialogOpen] = useState<boolean>(false);
   const segment = useParams().segment;
   useEffect(() => {
     const fetchProfileData = async () => {
-      const SERVER_URL = import.meta.env.VITE_SERVER_URL;
       try {
         const res = await fetch(`${SERVER_URL}/${segment}`, {
           method: "GET",
           credentials: "include",
         });
-
         switch (res.status) {
           case 404:
             setIsNotFound(true);
             break;
           case 200: {
             const data = await res.json();
+            sessionStorage.setItem("profilePic", data.profilePic);
             setUserDetails(data);
             setIsNotFound(false);
             setIsOwnProfile(data.isOwnProfile);
             setIsFollowed(data.isFollowing);
             break;
           }
+          case 403:
+            alert("Your session has expired...Logging you out");
+            sessionStorage.clear();
+            location.reload();
+            return;
           default:
             throw new Error(`Status code of ${res.status}`);
         }
@@ -167,7 +70,7 @@ function Profile() {
     };
 
     fetchProfileData();
-  }, [segment]);
+  }, [segment, SERVER_URL]);
   if (isNotFound) return <NotFound />;
   else if (userDetails === null) return <Loading />;
   return (
@@ -223,19 +126,10 @@ function Profile() {
                 <p>{postsCount} posts</p>
                 <p
                   role="button"
-                  onClick={async () => {
+                  onClick={() => {
                     if (isOwnProfile) {
-                      const data = await fetchFollows(
-                        SERVER_URL,
-                        "followers",
-                        followersList,
-                      );
-                      if (data === null || data === undefined) {
-                        setIsFollowerDialogOpen(true);
-                        return;
-                      }
-                      setFollowersList(data);
-                      setIsFollowerDialogOpen(true);
+                      setIsDialogFollowers(true);
+                      setIsFollowDialogOpen(true);
                     }
                   }}
                 >
@@ -243,19 +137,10 @@ function Profile() {
                 </p>
                 <p
                   role="button"
-                  onClick={async () => {
+                  onClick={() => {
                     if (isOwnProfile) {
-                      const data = await fetchFollows(
-                        SERVER_URL,
-                        "followings",
-                        followingsList,
-                      );
-                      if (data === null || data === undefined) {
-                        setIsFollowingDialogOpen(true);
-                        return;
-                      }
-                      setFollowingsList(data);
-                      setIsFollowingDialogOpen(true);
+                      setIsDialogFollowers(false);
+                      setIsFollowDialogOpen(true);
                     }
                   }}
                 >
@@ -268,129 +153,19 @@ function Profile() {
         <hr />
         <ProfilePostsLayout setPostsCount={setPostsCount} />
       </div>
-      <DialogBox isOpen={isFollowingDialogOpen} title="Following">
-        {followingsList.map((item) => {
-          return (
-            <div key={item.id} className={styles.followsItem}>
-              <img
-                src={item.profilePic}
-                alt=""
-                className={styles.followsItemImage}
-              />
-              <a
-                href={`${location.origin}/${item.username}`}
-                className={styles.followsItemAnchor}
-              >
-                @{item.username}
-              </a>
-            </div>
-          );
-        })}
-        <Button
-          title="Close"
-          className="btn btn-danger mt-3"
-          type="button"
-          handleClick={() => {
-            setIsFollowingDialogOpen(false);
-          }}
-        />
-      </DialogBox>
-      <DialogBox isOpen={isFollowerDialogOpen} title="Followers">
-        {followersList.map((item) => {
-          return (
-            <div key={item.id} className={styles.followsItem}>
-              <img
-                src={item.profilePic}
-                alt=""
-                className={styles.followsItemImage}
-              />
-              <a
-                href={`${location.origin}/${item.username}`}
-                className={styles.followsItemAnchor}
-              >
-                @{item.username}
-              </a>
-            </div>
-          );
-        })}
-        <Button
-          title="Close"
-          className="btn btn-danger mt-3"
-          type="button"
-          handleClick={() => {
-            setIsFollowerDialogOpen(false);
-          }}
-        />
-      </DialogBox>
-      <DialogBox title="Update Password" isOpen={isChangePasswordDialogOpen}>
-        <FormInput
-          type="password"
-          onChange={(e) => {
-            setOldPasswordValue(e.target.value);
-          }}
-          value={oldPasswordValue}
-          className="mt-3"
-          placeholder="Old password"
-        />
-        <FormInput
-          type="password"
-          onChange={(e) => {
-            setNewPasswordValue(e.target.value);
-          }}
-          value={newPasswordValue}
-          className="mt-2"
-          placeholder="New password"
-        />
-        <Button
-          className="mt-3 btn btn-primary"
-          title="Submit"
-          type="button"
-          handleClick={() => {
-            handlePasswordChange(
-              SERVER_URL,
-              oldPasswordValue,
-              newPasswordValue,
-              setIsChangePasswordDialogOpen,
-            );
-            setOldPasswordValue("");
-            setNewPasswordValue("");
-          }}
-        />
-        <Button
-          className="mt-3 ms-2 btn btn-danger"
-          title="Close"
-          type="button"
-          handleClick={() => {
-            setIsChangePasswordDialogOpen(false);
-          }}
-        />
-      </DialogBox>
-      <DialogBox title="Update Profile" isOpen={isChangeProfileDialogOpen}>
-        <FormInput
-          type="file"
-          onChange={(e) => {
-            if (e.target.files && e.target.files.length !== 0) {
-              setNewProfileValue(e.target.files[0]);
-            }
-          }}
-        />
-        <Button
-          className="mt-3 btn btn-primary"
-          title="Submit"
-          type="button"
-          handleClick={() => {
-            handleChangeProfilePic(SERVER_URL, newProfileValue);
-          }}
-        />
-        <Button
-          className="mt-3 ms-2 btn btn-danger"
-          title="Close"
-          type="button"
-          handleClick={() => {
-            setIsChangeProfileDialogOpen(false);
-          }}
-        />
-      </DialogBox>
+      <FollowDialog
+        isDialogOpen={isFollowDialogOpen}
+        setIsDialogOpen={setIsFollowDialogOpen}
+        isFollowers={isDialogFollowers}
+      />
+      <UpdatePassword
+        isDialogOpen={isChangePasswordDialogOpen}
+        setIsDialogOpen={setIsChangePasswordDialogOpen}
+      />
+      <UpdateProfile
+        isDialogOpen={isChangeProfileDialogOpen}
+        setIsDialogOpen={setIsChangeProfileDialogOpen}
+      />
     </>
   );
 }

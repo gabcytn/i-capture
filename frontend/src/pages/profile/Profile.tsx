@@ -10,6 +10,21 @@ import { useParams } from "react-router";
 import NotFound from "../NotFound";
 import Loading from "../loading/Loading";
 
+async function followUnfollow(endpoint: string, url: string, username: string) {
+  try {
+    const res = await fetch(`${url}/${endpoint}/${username}`, {
+      method: "POST",
+      credentials: "include",
+    });
+    if (!res.ok) throw new Error(`Error status code of ${res.status}`);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error("Error in follow unfollow");
+      console.error(e.message);
+    }
+  }
+}
+
 type UserDetails = {
   username: string;
   profilePic: string;
@@ -46,7 +61,6 @@ function Profile() {
             break;
           case 200: {
             const data = await res.json();
-            sessionStorage.setItem("profilePic", data.profilePic);
             setUserDetails(data);
             setIsNotFound(false);
             setIsOwnProfile(data.isOwnProfile);
@@ -117,6 +131,11 @@ function Profile() {
                     type="button"
                     handleClick={() => {
                       setIsFollowed(!isFollowed);
+                      if (isFollowed) {
+                        followUnfollow("unfollow", SERVER_URL, segment!);
+                        return;
+                      }
+                      followUnfollow("follow", SERVER_URL, segment!);
                     }}
                   />
                 )}

@@ -5,7 +5,6 @@ import Button from "../../../../components/Button";
 
 async function fetchFollows(endpoint: string, list: Follows[]) {
   if (list.length !== 0) return;
-  console.log("in fetch follows()");
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   try {
     const res = await fetch(`${SERVER_URL}/${endpoint}`, {
@@ -49,14 +48,12 @@ function FollowDialog({
     if (!isDialogOpen) return;
     const doSideEffect = async () => {
       if (isFollowers) {
-        console.log("followers clicked");
         const data = await fetchFollows("followers", followersList);
         if (data === undefined) return;
         setListToDisplay(data);
         setFollowersList(data);
         return;
       } else if (!isFollowers) {
-        console.log("followings clicked");
         const data = await fetchFollows("followings", followingsList);
         if (data === undefined) return;
         setListToDisplay(data);
@@ -66,9 +63,7 @@ function FollowDialog({
     doSideEffect();
   }, [isDialogOpen]);
 
-  if (!isDialogOpen || !listToDisplay) {
-    return null;
-  }
+  if (!isDialogOpen || !listToDisplay) return null;
 
   return (
     <DialogBox isOpen={true} title={isFollowers ? "Followers" : "Following"}>

@@ -69,7 +69,7 @@ public class PostsService {
         final Map<String, Object> post = postsRepository.findById(postId);
 
         if (post.isEmpty()) {
-            return new ResponseEntity<>(new HashMap<>(), HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         final boolean isLiked = likesRepository.isLikedBy(uuid, postId);

@@ -45,7 +45,7 @@ function ProfilePostsLayout({ setPostsCount }: PropType) {
     return <h3 className="text-center">No Posts Yet</h3>;
   }
   return (
-    <div className="row">
+    <div className="row g-3">
       {posts.map((post) => {
         return (
           <div className="col-6" key={post.id}>

@@ -10,26 +10,3 @@
 	border-radius: 100%;
 	margin-right: 0.5rem;
 }
-
-.followsItem {
-	display: flex;
-	align-items: center;
-}
-
-.followsItem+.followsItem {
-	margin-top: .85rem;
-}
-
-.followsItemImage {
-	width: 70px;
-	height: 70px;
-	border-radius: 100%;
-	margin-right: .5rem;
-}
-
-.followsItemAnchor {
-	width: max-content;
-	text-decoration: none;
-	font-weight: 600;
-	color: #020202;
-}

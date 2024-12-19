@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import styles from "./Post.module.css";
 import Button from "../../components/Button";
 import SideNav from "../../components/SideNav/SideNav";
+import NotFound from "../NotFound";
 
 type PostTypes = {
   profilePic: string;
@@ -19,6 +20,7 @@ function Post() {
   const [post, setPost] = useState<PostTypes | null>(null);
   const [likeCount, setLikeCount] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isNotFound, setIsNotFound] = useState<boolean | null>(null);
 
   const unlike = async () => {
     setIsLiked(false);
@@ -46,10 +48,10 @@ function Post() {
           setIsLiked(data.isLiked);
           break;
         }
-        case 404: {
-          alert("404");
-          throw new Error("Post not found");
-        }
+        case 400:
+        case 404:
+          setIsNotFound(true);
+          break;
 
         case 403:
           alert("Your session has expired\nLogging out now");
@@ -59,11 +61,13 @@ function Post() {
 
         default:
           console.log("default");
+          console.log(res.status);
           break;
       }
     };
     fetchData();
   }, [SERVER_URL, postId, navigate]);
+  if (isNotFound) return <NotFound />;
   return (
     <>
       <SideNav />

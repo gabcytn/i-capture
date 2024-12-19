@@ -35,7 +35,7 @@ public class PostsRepository {
         return jdbcTemplate.query(sql, rowMapper, id.toString());
     }
 
-    public Map<String, Object> findById (Integer id) {
+    public Map<String, Object> findById (Integer id, String uuid) {
         final String sql = " SELECT posts.id AS post_id, " +
                 "posts.photo_url, " +
                 "posts.photo_public_id, users.id AS uuid, " +
@@ -51,6 +51,8 @@ public class PostsRepository {
                 objectMap.put("profilePic", rs.getString("profile_pic"));
                 objectMap.put("postOwner", rs.getString("username"));
                 objectMap.put("photoUrl", rs.getString("photo_url"));
+                objectMap.put("isOwned", uuid.equals(rs.getString("uuid")));
+                objectMap.put("photoPublicId", rs.getString("photo_public_id"));
             }
             return objectMap;
         };

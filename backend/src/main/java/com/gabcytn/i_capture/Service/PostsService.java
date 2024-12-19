@@ -66,7 +66,7 @@ public class PostsService {
     }
 
     public ResponseEntity<Map<String, Object>> getPost (String uuid, int postId) {
-        final Map<String, Object> post = postsRepository.findById(postId);
+        final Map<String, Object> post = postsRepository.findById(postId, uuid);
 
         if (post.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -5,15 +5,14 @@ import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Repository.LikesRepository;
 import com.gabcytn.i_capture.Repository.PostsRepository;
 import com.gabcytn.i_capture.Repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class PostsService {
@@ -66,7 +65,7 @@ public class PostsService {
     }
 
     public ResponseEntity<Map<String, Object>> getPost (String uuid, int postId) {
-        final Map<String, Object> post = postsRepository.findById(postId, uuid);
+        final Map<String, Object> post = postsRepository.findPostToDisplayById(postId, uuid);
 
         if (post.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -78,5 +77,30 @@ public class PostsService {
         post.put("likes", likeCount);
 
         return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    public ResponseEntity<Void> deletePost (int postId, HttpServletRequest request) {
+        try {
+            if (postsRepository.isPostOwnedBy(postId, getStoredUuid(request))) {
+                Optional<Post> post = postsRepository.findById(postId);
+                String photoPublicId = post.orElseThrow().getPhotoPublicId();
+                cloudinaryService.deleteImageInCloudinary(photoPublicId);
+                postsRepository.deletePost(postId);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (NoSuchElementException exception) {
+            System.err.println("Post not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            System.err.println("Error deleting post in cloudinary");
+            System.err.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private UUID getStoredUuid (HttpServletRequest request) {
+        String sessionId = request.getSession().getId();
+        return UUID.fromString((String) request.getSession().getAttribute(sessionId));
     }
 }

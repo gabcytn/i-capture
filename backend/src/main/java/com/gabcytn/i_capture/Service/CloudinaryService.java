@@ -2,23 +2,18 @@ package com.gabcytn.i_capture.Service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.gabcytn.i_capture.Model.User;
-import com.gabcytn.i_capture.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class CloudinaryService {
     private final Cloudinary cloudinary;
-    private final UserRepository userRepository;
 
-    public CloudinaryService(Cloudinary cloudinary, UserRepository userRepository) {
+    public CloudinaryService(Cloudinary cloudinary) {
         this.cloudinary = cloudinary;
-        this.userRepository = userRepository;
     }
 
     public String[] uploadImageToCloudinary (MultipartFile image) {
@@ -38,12 +33,7 @@ public class CloudinaryService {
         }
     }
 
-
-    private void deleteImageInCloudinary (int id) throws IOException {
-//        Optional<Item> item = itemRepository.findById(id);
-//        if (item.isPresent()) {
-//            final String publicID = item.get().doGetImagePublicID();
-//            cloudinary.uploader().destroy(publicID, null);
-//        }
+    public void deleteImageInCloudinary (String publicId) throws IOException {
+        cloudinary.uploader().destroy(publicId, null);
     }
 }

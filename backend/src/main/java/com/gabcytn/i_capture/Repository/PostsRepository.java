@@ -35,7 +35,7 @@ public class PostsRepository {
         return jdbcTemplate.query(sql, rowMapper, id.toString());
     }
 
-    public Map<String, Object> findById (Integer id, String uuid) {
+    public Map<String, Object> findPostToDisplayById (Integer id, String uuid) {
         final String sql = " SELECT posts.id AS post_id, " +
                 "posts.photo_url, " +
                 "posts.photo_public_id, users.id AS uuid, " +
@@ -58,5 +58,39 @@ public class PostsRepository {
         };
 
         return jdbcTemplate.query(sql, extractor, id.toString());
+    }
+
+    public Optional<Post> findById (int id) {
+        String sql = "SELECT post_owner, photo_public_id FROM posts WHERE id = ?";
+
+        ResultSetExtractor<Post> extractor = (rs) -> {
+            if (rs.next()) {
+                Post post = new Post();
+                post.setId(id);
+                post.setPhotoPublicId(rs.getString("photo_public_id"));
+                post.setPostOwner(UUID.fromString(rs.getString("post_owner")));
+                return post;
+            }
+
+            return null;
+        };
+
+        return Optional.ofNullable(jdbcTemplate.query(sql, extractor, id));
+    }
+
+    public void deletePost (int id) {
+        String sql = "DELETE FROM posts WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public boolean isPostOwnedBy (int postId, UUID uuid) {
+        String sql = "SELECT post_owner FROM posts WHERE id = ?";
+        ResultSetExtractor<String> extractor = (rs) -> {
+            if (rs.next()) return rs.getString("post_owner");
+            return null;
+        };
+
+        String postOwner = jdbcTemplate.query(sql, extractor, postId);
+        return uuid.toString().equals(postOwner);
     }
 }

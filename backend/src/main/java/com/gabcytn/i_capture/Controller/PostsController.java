@@ -35,10 +35,18 @@ public class PostsController {
     }
 
     @GetMapping("/post/{id}")
-    public ResponseEntity<Map<String, Object>> getPostDetails (@PathVariable int id, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> getPostDetails (
+            @PathVariable int id,
+            HttpServletRequest request
+    ) {
         String sessionId = request.getSession().getId();
         String uuid = (String) request.getSession().getAttribute(sessionId);
 
         return postsService.getPost(uuid, id);
+    }
+
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity<Void> deletePost (@PathVariable int id, HttpServletRequest request) {
+        return postsService.deletePost(id, request);
     }
 }

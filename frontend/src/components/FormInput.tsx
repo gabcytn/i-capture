@@ -4,6 +4,7 @@ type FormInputProps = {
   className?: string;
   value?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name?: string;
 };
 function FormInput({
   type,
@@ -11,6 +12,7 @@ function FormInput({
   className,
   value,
   onChange,
+  name,
 }: FormInputProps) {
   return (
     <input
@@ -19,6 +21,8 @@ function FormInput({
       type={type}
       placeholder={placeholder}
       className={className + " form-control"}
+      required
+      name={name}
     />
   );
 }

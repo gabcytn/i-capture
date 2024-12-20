@@ -129,27 +129,30 @@ function SideNav() {
         </div>
       </div>
       <DialogBox isOpen={isSearchDialogOpen} title="Search User">
-        <FormInput
-          type="text"
-          placeholder="Search"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            setSearchValue(e.target.value);
-          }}
-          value={searchValue}
-        />
-        <div className="d-flex mt-3">
-          <Button
-            title="Submit"
-            type="button"
-            className="btn btn-primary me-2"
+        <form method="GET" action={`${location.origin}/search`}>
+          <FormInput
+            type="text"
+            placeholder="Search"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              setSearchValue(e.target.value);
+            }}
+            value={searchValue}
+            name="username"
           />
-          <Button
-            title="Close"
-            className="btn btn-danger"
-            type="button"
-            handleClick={closeSearchDialog}
-          />
-        </div>
+          <div className="d-flex mt-3">
+            <Button
+              title="Submit"
+              type="submit"
+              className="btn btn-primary me-2"
+            />
+            <Button
+              title="Close"
+              className="btn btn-danger"
+              type="button"
+              handleClick={closeSearchDialog}
+            />
+          </div>
+        </form>
       </DialogBox>
       <DialogBox isOpen={isCreateDialogOpen} title="Create">
         <FormInput

@@ -1,0 +1,15 @@
+.searchImage {
+	width: 150px;
+	height: 150px;
+	border-radius: 100%;
+}
+
+.noUserFound {
+	text-align: center;
+}
+
+.noUserDiv {
+	height: 100dvh;
+	display: grid;
+	place-items: center;
+}

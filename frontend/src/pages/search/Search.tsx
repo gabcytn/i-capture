@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router";
 import styles from "./Search.module.css";
 import { useEffect, useState } from "react";
 import SideNav from "../../components/SideNav/SideNav";
+import Loading from "../loading/Loading";
 
 type User = {
   id: string;
@@ -12,7 +13,7 @@ type User = {
 function Search() {
   const [searchParams] = useSearchParams();
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[] | null>(null);
   useEffect(() => {
     const searchUsername = searchParams.get("username");
     const fetchUsers = async () => {
@@ -46,6 +47,7 @@ function Search() {
     };
     fetchUsers();
   }, [searchParams, SERVER_URL]);
+  if (users === null) return <Loading />;
   return (
     <>
       <SideNav />

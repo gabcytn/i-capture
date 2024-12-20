@@ -4,6 +4,7 @@ import styles from "./Post.module.css";
 import Button from "../../components/Button";
 import SideNav from "../../components/SideNav/SideNav";
 import NotFound from "../NotFound";
+import Loading from "../loading/Loading";
 
 type PostTypes = {
   profilePic: string;
@@ -22,6 +23,24 @@ function Post() {
   const [likeCount, setLikeCount] = useState<number>(0);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isNotFound, setIsNotFound] = useState<boolean | null>(null);
+
+  const deletePost = async () => {
+    try {
+      const res = await fetch(`${SERVER_URL}/post/${postId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`Error status code of ${res.status}`);
+
+      alert("Successfully deleted");
+      location.href = `${location.origin}/${sessionStorage.getItem("username")}`;
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error("Error deleting post");
+        console.error(error.message);
+      }
+    }
+  };
 
   const likeUnlike = async (endpoint: string) => {
     try {
@@ -84,6 +103,7 @@ function Post() {
     fetchData();
   }, [SERVER_URL, postId, navigate]);
   if (isNotFound) return <NotFound />;
+  else if (!post) return <Loading />;
   return (
     <>
       <SideNav />
@@ -92,21 +112,29 @@ function Post() {
           <div className="col-12 d-flex my-3 align-items-center justify-content-between">
             <div className="d-flex align-items-center">
               <img
-                src={post?.profilePic}
+                src={post.profilePic}
                 alt="Post owner profile picture"
                 className={styles.postOwnerProfile}
               />
-              <a href="" className={`${styles.usernameLink} ms-3`}>
-                @<strong>{post?.postOwner}</strong>
+              <a
+                href={`${location.origin}/${post.postOwner}`}
+                className={`${styles.usernameLink} ms-3`}
+              >
+                @<strong>{post.postOwner}</strong>
               </a>
             </div>
-            {post?.isOwned ? (
+            {post.isOwned ? (
               <div>
-                <button className="btn btn-danger">Delete</button>
+                <Button
+                  type="button"
+                  className="btn btn-danger"
+                  title="Delete"
+                  handleClick={deletePost}
+                />
               </div>
             ) : null}
           </div>
-          <img src={post?.photoUrl} alt="Image post" />
+          <img src={post.photoUrl} alt="Image post" />
           <div className="col-12 d-flex align-items-center mt-3">
             <form action="" className="w-100 d-flex">
               {isLiked ? (

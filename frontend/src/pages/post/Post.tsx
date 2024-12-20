@@ -11,6 +11,7 @@ type PostTypes = {
   photoUrl: string;
   isLiked: boolean;
   likes: number;
+  isOwned: boolean;
 };
 
 function Post() {
@@ -22,16 +23,31 @@ function Post() {
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isNotFound, setIsNotFound] = useState<boolean | null>(null);
 
+  const likeUnlike = async (endpoint: string) => {
+    try {
+      const res = await fetch(`${SERVER_URL}/post/${endpoint}/${postId}`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error(`Error status code of ${res.status}`);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        alert("Error liking/unliking");
+        console.error(e.message);
+      }
+    }
+  };
+
   const unlike = async () => {
     setIsLiked(false);
     setLikeCount((prev) => prev - 1);
-    // TODO: PUT request to unlike the post
+    likeUnlike("unlike");
   };
 
   const like = async () => {
     setIsLiked(true);
     setLikeCount((prev) => prev + 1);
-    // TODO: PUT request to unlike the post
+    likeUnlike("like");
   };
 
   useEffect(() => {
@@ -84,9 +100,11 @@ function Post() {
                 @<strong>{post?.postOwner}</strong>
               </a>
             </div>
-            <div>
-              <button className="btn btn-danger">Delete</button>
-            </div>
+            {post?.isOwned ? (
+              <div>
+                <button className="btn btn-danger">Delete</button>
+              </div>
+            ) : null}
           </div>
           <img src={post?.photoUrl} alt="Image post" />
           <div className="col-12 d-flex align-items-center mt-3">

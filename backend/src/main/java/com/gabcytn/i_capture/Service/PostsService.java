@@ -84,6 +84,7 @@ public class PostsService {
             if (postsRepository.isPostOwnedBy(postId, getStoredUuid(request))) {
                 Optional<Post> post = postsRepository.findById(postId);
                 String photoPublicId = post.orElseThrow().getPhotoPublicId();
+                likesRepository.deleteLikesOf(post.orElseThrow().getId());
                 cloudinaryService.deleteImageInCloudinary(photoPublicId);
                 postsRepository.deletePost(postId);
                 return new ResponseEntity<>(HttpStatus.OK);

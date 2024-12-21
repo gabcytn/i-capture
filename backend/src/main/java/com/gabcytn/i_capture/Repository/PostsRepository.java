@@ -102,13 +102,16 @@ public class PostsRepository {
                 "LEFT JOIN likes " +
                 "ON posts.id = likes.post_id " +
                 "AND likes.liker_id = ? " +
+                "INNER JOIN followers" +
+                "ON followers.following_id = posts.post_owner " +
                 "WHERE likes.post_id IS NULL " +
+                "AND followers.follower_id != ? " +
                 "AND posts.post_owner != ? " +
                 "AND posts.id < ? " +
                 "ORDER BY posts.id DESC " +
                 "LIMIT 10";
 
-        return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), lastViewedPostId);
+        return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), uuid.toString(), lastViewedPostId);
     }
 
 

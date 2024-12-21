@@ -1,0 +1,22 @@
+.tabList {
+	display: flex;
+	justify-content: space-between;
+	flex-grow: 1;
+	cursor: pointer;
+	list-style-type: none;
+	padding: 0;
+	border: none;
+}
+
+.tabItem {
+	width: 100%;
+	text-align: center;
+	padding: .5rem 0;
+	font-size: 1.125rem;
+}
+
+.tabItem:hover,
+.activeTab {
+	background-color: rgba(0, 0, 0, 0.035);
+	border: none;
+}

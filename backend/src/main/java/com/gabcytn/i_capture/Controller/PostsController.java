@@ -49,4 +49,24 @@ public class PostsController {
     public ResponseEntity<Void> deletePost (@PathVariable int id, HttpServletRequest request) {
         return postsService.deletePost(id, request);
     }
+
+    @GetMapping("/posts/for-you")
+    public ResponseEntity<List<Map<String, Object>>> getPostsForYou (
+            HttpServletRequest request,
+            @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
+    ) {
+        return postsService.getPostsForYou(request, lastViewedPostId);
+    }
+
+    @GetMapping("posts/followings")
+    public ResponseEntity<List<Map<String, Object>>> getPostsFromFollowings (HttpServletRequest request) {
+        // TODO: call service method
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping("posts/liked")
+    public ResponseEntity<List<Map<String, Object>>> getLikedPosts (HttpServletRequest request) {
+        // TODO: call service method
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

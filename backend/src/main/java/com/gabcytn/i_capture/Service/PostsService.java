@@ -100,6 +100,22 @@ public class PostsService {
         }
     }
 
+    public ResponseEntity<List<Map<String, Object>>> getPostsForYou (
+            HttpServletRequest request,
+            int lastPostId)
+    {
+        lastPostId = lastPostId != 0 ? lastPostId : postsRepository.getLastPostId() + 1;
+        try {
+            final List<Map<String, Object>> posts =
+                    postsRepository.findPostsForYou(getStoredUuid(request), lastPostId);
+            Collections.shuffle(posts);
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private UUID getStoredUuid (HttpServletRequest request) {
         String sessionId = request.getSession().getId();
         return UUID.fromString((String) request.getSession().getAttribute(sessionId));

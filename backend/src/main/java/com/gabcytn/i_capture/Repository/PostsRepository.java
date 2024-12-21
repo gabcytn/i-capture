@@ -93,4 +93,47 @@ public class PostsRepository {
         String postOwner = jdbcTemplate.query(sql, extractor, postId);
         return uuid.toString().equals(postOwner);
     }
+
+    public List<Map<String, Object>> findPostsForYou (UUID uuid, int lastViewedPostId) {
+        String sql = "SELECT posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic " +
+                "FROM posts " +
+                "JOIN users " +
+                "ON posts.post_owner = users.id " +
+                "LEFT JOIN likes " +
+                "ON posts.id = likes.post_id " +
+                "AND likes.liker_id = ? " +
+                "WHERE likes.post_id IS NULL " +
+                "AND posts.post_owner != ? " +
+                "AND posts.id < ? " +
+                "ORDER BY posts.id DESC " +
+                "LIMIT 10";
+
+        return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), lastViewedPostId);
+    }
+
+
+    // row mapper for posts in home page
+    private RowMapper<Map<String, Object>> rowMapper() {
+        return (rs, rowNum) -> {
+            Map<String, Object> postMap = new HashMap<>();
+            postMap.put("postId", rs.getInt("id"));
+            postMap.put("photoUrl", rs.getString("photo_url"));
+            postMap.put("postOwner", rs.getString("post_owner"));
+            postMap.put("profilePic", rs.getString("profile_pic"));
+            return postMap;
+        };
+    }
+
+    public int getLastPostId () {
+        String sql = "SELECT id FROM posts ORDER BY id DESC LIMIT 1";
+        ResultSetExtractor<Integer> extractor = rs -> {
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+            return null;
+        };
+
+        Integer lastId = jdbcTemplate.query(sql, extractor);
+        return lastId != null ? lastId : 0;
+    }
 }

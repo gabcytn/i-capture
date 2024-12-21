@@ -67,8 +67,10 @@ public class PostsController {
     }
 
     @GetMapping("posts/liked")
-    public ResponseEntity<List<Map<String, Object>>> getLikedPosts (HttpServletRequest request) {
-        // TODO: call service method
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<List<Map<String, Object>>> getLikedPosts (
+            HttpServletRequest request,
+            @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
+    ) {
+        return postsService.getLikedPosts(request, lastViewedPostId);
     }
 }

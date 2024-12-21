@@ -118,6 +118,21 @@ public class PostsService {
         }
     }
 
+    public ResponseEntity<List<Map<String, Object>>> getLikedPosts(
+            HttpServletRequest request,
+            int lastPostId
+    ) {
+        lastPostId = lastPostId != 0 ? lastPostId : postsRepository.getLastPostId() + 1;
+        try {
+            final List<Map<String, Object>> likedPosts = postsRepository.findLikedPosts(getStoredUuid(request), lastPostId);
+            Collections.shuffle(likedPosts);
+            return new ResponseEntity<>(likedPosts, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     private UUID getStoredUuid (HttpServletRequest request) {
         String sessionId = request.getSession().getId();
         return UUID.fromString((String) request.getSession().getAttribute(sessionId));

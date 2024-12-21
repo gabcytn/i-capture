@@ -116,6 +116,22 @@ public class PostsRepository {
         return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), uuid.toString(), lastViewedPostId);
     }
 
+    public List<Map<String, Object>> findLikedPosts (UUID uuid, int lastViewPostId) {
+        final String sql = """
+                SELECT posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic
+                FROM posts
+                JOIN users
+                ON users.id = posts.post_owner
+                INNER JOIN likes
+                ON posts.id = likes.post_id
+                AND likes.liker_id = ?
+                AND posts.post_owner != ?
+                AND posts.id < ?
+                ORDER BY posts.id DESC
+                LIMIT 10
+                """;
+        return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), lastViewPostId);
+    }
 
     // row mapper for posts in home page
     private RowMapper<Map<String, Object>> rowMapper() {

@@ -102,12 +102,14 @@ public class PostsService {
 
     public ResponseEntity<List<Map<String, Object>>> getPostsForYou (
             HttpServletRequest request,
-            int lastPostId)
+            int lastPostId,
+            boolean isFollowing
+    )
     {
         lastPostId = lastPostId != 0 ? lastPostId : postsRepository.getLastPostId() + 1;
         try {
             final List<Map<String, Object>> posts =
-                    postsRepository.findPostsForYou(getStoredUuid(request), lastPostId);
+                    postsRepository.findPostsForYourOrFollowing(getStoredUuid(request), lastPostId, isFollowing);
             Collections.shuffle(posts);
             return new ResponseEntity<>(posts, HttpStatus.OK);
         } catch (Exception e) {

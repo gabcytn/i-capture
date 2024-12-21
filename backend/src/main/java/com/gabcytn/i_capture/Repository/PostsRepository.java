@@ -94,7 +94,8 @@ public class PostsRepository {
         return uuid.toString().equals(postOwner);
     }
 
-    public List<Map<String, Object>> findPostsForYou (UUID uuid, int lastViewedPostId) {
+    public List<Map<String, Object>> findPostsForYourOrFollowing (UUID uuid, int lastViewedPostId, boolean isFollowing) {
+        final String expression = isFollowing ? "=" : "!=";
         String sql = "SELECT posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic " +
                 "FROM posts " +
                 "JOIN users " +
@@ -105,7 +106,8 @@ public class PostsRepository {
                 "INNER JOIN followers " +
                 "ON followers.following_id = posts.post_owner " +
                 "WHERE likes.post_id IS NULL " +
-                "AND followers.follower_id != ? " +
+                "AND followers.follower_id " +
+                expression + " ? " +
                 "AND posts.post_owner != ? " +
                 "AND posts.id < ? " +
                 "ORDER BY posts.id DESC " +

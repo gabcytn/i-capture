@@ -55,13 +55,15 @@ public class PostsController {
             HttpServletRequest request,
             @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
     ) {
-        return postsService.getPostsForYou(request, lastViewedPostId);
+        return postsService.getPostsForYou(request, lastViewedPostId, false);
     }
 
     @GetMapping("posts/followings")
-    public ResponseEntity<List<Map<String, Object>>> getPostsFromFollowings (HttpServletRequest request) {
-        // TODO: call service method
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<List<Map<String, Object>>> getPostsFromFollowings (
+            HttpServletRequest request,
+            @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
+    ) {
+        return postsService.getPostsForYou(request, lastViewedPostId, true);
     }
 
     @GetMapping("posts/liked")

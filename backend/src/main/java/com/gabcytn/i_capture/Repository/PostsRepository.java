@@ -102,7 +102,7 @@ public class PostsRepository {
                 "LEFT JOIN likes " +
                 "ON posts.id = likes.post_id " +
                 "AND likes.liker_id = ? " +
-                "INNER JOIN followers" +
+                "INNER JOIN followers " +
                 "ON followers.following_id = posts.post_owner " +
                 "WHERE likes.post_id IS NULL " +
                 "AND followers.follower_id != ? " +

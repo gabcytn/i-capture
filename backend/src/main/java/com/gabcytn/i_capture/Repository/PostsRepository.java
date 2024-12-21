@@ -95,42 +95,52 @@ public class PostsRepository {
     }
 
     public List<Map<String, Object>> findPostsForYourOrFollowing (UUID uuid, int lastViewedPostId, boolean isFollowing) {
-        final String expression = isFollowing ? "=" : "!=";
-        String sql = "SELECT posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic " +
-                "FROM posts " +
-                "JOIN users " +
-                "ON posts.post_owner = users.id " +
-                "LEFT JOIN likes " +
-                "ON posts.id = likes.post_id " +
-                "AND likes.liker_id = ? " +
-                "INNER JOIN followers " +
-                "ON followers.following_id = posts.post_owner " +
-                "WHERE likes.post_id IS NULL " +
-                "AND followers.follower_id " +
-                expression + " ? " +
-                "AND posts.post_owner != ? " +
-                "AND posts.id < ? " +
-                "ORDER BY posts.id DESC " +
-                "LIMIT 10";
+        final String expression = isFollowing ? "NOT" : "";
+        String sql = """
+            SELECT
+                posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic
+            FROM
+                posts
+            INNER JOIN
+                users ON users.id = posts.post_owner
+            LEFT JOIN
+                likes ON likes.post_id = posts.id
+                AND likes.liker_id = ?
+            LEFT JOIN
+                followers ON followers.follower_id = ?
+                AND followers.following_id = posts.post_owner
+            WHERE
+                posts.post_owner != ?
+                AND likes.post_id IS NULL
+                AND followers.following_id IS\s""" + expression + """
+                NULL
+                AND posts.id < ?
+            ORDER BY
+                posts.id DESC
+            LIMIT 10
+            """;
 
         return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), uuid.toString(), lastViewedPostId);
     }
 
     public List<Map<String, Object>> findLikedPosts (UUID uuid, int lastViewPostId) {
         final String sql = """
-                SELECT posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic
-                FROM posts
-                JOIN users
-                ON users.id = posts.post_owner
-                INNER JOIN likes
-                ON posts.id = likes.post_id
-                AND likes.liker_id = ?
-                AND posts.post_owner != ?
-                AND posts.id < ?
-                ORDER BY posts.id DESC
+                SELECT
+                    posts.id, posts.photo_url, users.username AS post_owner, users.profile_pic
+                FROM
+                    posts
+                JOIN
+                    users ON users.id = posts.post_owner
+                INNER JOIN
+                    likes ON posts.id = likes.post_id
+                    AND likes.liker_id = ?
+                WHERE
+                    posts.id < ?
+                ORDER BY
+                    posts.id DESC
                 LIMIT 10
                 """;
-        return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), uuid.toString(), lastViewPostId);
+        return jdbcTemplate.query(sql, rowMapper(), uuid.toString(), lastViewPostId);
     }
 
     // row mapper for posts in home page

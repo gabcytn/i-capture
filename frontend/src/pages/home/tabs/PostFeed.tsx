@@ -13,19 +13,17 @@ type Post = {
 
 type TabProps = {
   feedType: string;
+  likeButtons: Map<number, boolean>;
+  setLikeButtons: (map: Map<number, boolean>) => void;
 };
 
-function Tab({ feedType }: TabProps) {
+function Tab({ feedType, likeButtons, setLikeButtons }: TabProps) {
   const query = useQuery({
     queryKey: ["posts", feedType],
     queryFn: () => {
-      return fetchPosts(0, feedType);
+      return fetchPosts(0, feedType, setLikeButtons);
     },
-    select: (data) => {
-      if (feedType === "liked")
-        return [...data].sort((a, b) => b.postId - a.postId);
-      return [...data].sort((a, b) => a.postId - b.postId);
-    },
+    staleTime: Infinity,
   });
   if (query.isLoading) return <Loading />;
   if (query.isError || !query.data) return <h2 className="error">error</h2>;
@@ -57,19 +55,17 @@ function Tab({ feedType }: TabProps) {
               />
 
               <div className="mt-3 d-flex align-items-center justify-content-start">
-                {feedType === "liked" ? (
-                  <Button
-                    className="btn btn-secondary w-25"
-                    title="Unlike"
-                    type="button"
-                  />
-                ) : (
-                  <Button
-                    className="btn btn-primary w-25"
-                    title="Like"
-                    type="button"
-                  />
-                )}
+                <Button
+                  className={`w-25 btn ${likeButtons.get(post.postId) ? "btn-secondary" : "btn-primary"}`}
+                  title={likeButtons.get(post.postId) ? "Unlike" : "Like"}
+                  type="button"
+                  handleClick={() => {
+                    const map = new Map(likeButtons);
+                    const oldValue = map.get(post.postId);
+                    map.set(post.postId, !oldValue);
+                    setLikeButtons(map);
+                  }}
+                />
               </div>
             </div>
           );

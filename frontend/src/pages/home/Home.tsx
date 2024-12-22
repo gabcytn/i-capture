@@ -2,7 +2,11 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import SideNav from "../../components/SideNav/SideNav";
 import styles from "./Home.module.css";
 import PostFeed from "./tabs/PostFeed.tsx";
+import { useState } from "react";
 function Home() {
+  const [likeButtons, setLikeButtons] = useState<Map<number, boolean>>(
+    new Map(),
+  );
   return (
     <>
       <SideNav />
@@ -14,13 +18,25 @@ function Home() {
         </TabList>
 
         <TabPanel>
-          <PostFeed feedType="for-you" />
+          <PostFeed
+            feedType="for-you"
+            likeButtons={likeButtons}
+            setLikeButtons={setLikeButtons}
+          />
         </TabPanel>
         <TabPanel>
-          <PostFeed feedType="followings" />
+          <PostFeed
+            feedType="followings"
+            likeButtons={likeButtons}
+            setLikeButtons={setLikeButtons}
+          />
         </TabPanel>
         <TabPanel>
-          <PostFeed feedType="liked" />
+          <PostFeed
+            feedType="liked"
+            likeButtons={likeButtons}
+            setLikeButtons={setLikeButtons}
+          />
         </TabPanel>
       </Tabs>
     </>

@@ -1,4 +1,14 @@
-async function fetchPosts(cursor: number, feedType: string) {
+type Post = {
+  postId: number;
+  photoUrl: string;
+  profilePic: string;
+  postOwner: string;
+};
+async function fetchPosts(
+  cursor: number,
+  feedType: string,
+  setLikeButtons: (map: Map<number, boolean>) => void,
+) {
   console.log("fetching posts: " + feedType);
   const SERVER_URL = import.meta.env.VITE_SERVER_URL;
   const res = await fetch(`${SERVER_URL}/posts/${feedType}?cursor=${cursor}`, {
@@ -11,6 +21,11 @@ async function fetchPosts(cursor: number, feedType: string) {
     location.reload();
   }
   const data = await res.json();
+  const map = new Map<number, boolean>();
+  data.map((post: Post) => {
+    map.set(post.postId, feedType === "liked");
+  });
+  setLikeButtons(map);
   return data;
 }
 

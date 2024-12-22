@@ -11,13 +11,11 @@ type Post = {
   postOwner: string;
 };
 
-type ForYouProps = {
-  postProp: Post[] | null;
-  setPostProp: (posts: Post[]) => void;
+type TabProps = {
   feedType: string;
 };
 
-function ForYou({ feedType }: ForYouProps) {
+function Tab({ feedType }: TabProps) {
   const query = useQuery({
     queryKey: ["posts", feedType],
     queryFn: () => {
@@ -88,4 +86,4 @@ function ForYou({ feedType }: ForYouProps) {
   );
 }
 
-export default ForYou;
+export default Tab;

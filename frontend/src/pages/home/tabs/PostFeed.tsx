@@ -1,7 +1,8 @@
-import { useEffect } from "react";
 import Loading from "../../loading/Loading";
 import styles from "./PostFeed.module.css";
 import Button from "../../../components/Button";
+import fetchPosts from "./fetchPostsFunction";
+import { useQuery } from "@tanstack/react-query";
 
 type Post = {
   postId: number;
@@ -10,53 +11,26 @@ type Post = {
   postOwner: string;
 };
 
-type ForYouProps = {
-  postProp: Post[] | null;
-  setPostProp: (posts: Post[]) => void;
+type TabProps = {
   feedType: string;
+  likeButtons: Map<number, boolean>;
+  setLikeButtons: (map: Map<number, boolean>) => void;
 };
 
-function ForYou({ postProp, setPostProp, feedType }: ForYouProps) {
-  const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-  const fetchPosts = async (cursor: number) => {
-    try {
-      const res = await fetch(
-        `${SERVER_URL}/posts/${feedType}?cursor=${cursor}`,
-        {
-          method: "GET",
-          credentials: "include",
-        },
-      );
-      switch (res.status) {
-        case 403:
-          alert("Session has expired...Logging you out");
-          sessionStorage.clear();
-          location.reload();
-          break;
-        case 200: {
-          const data = await res.json();
-          setPostProp(data);
-          break;
-        }
-        default:
-          throw new Error(`Error status code of ${res.status}`);
-      }
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        console.error("Error fetching posts");
-        console.error(e.message);
-      }
-    }
-  };
-  useEffect(() => {
-    if (postProp === null) fetchPosts(0);
-    else if (postProp.length === 0) fetchPosts(0);
-  }, []);
-  if (!postProp) return <Loading />;
+function Tab({ feedType, likeButtons, setLikeButtons }: TabProps) {
+  const query = useQuery({
+    queryKey: ["posts", feedType],
+    queryFn: () => {
+      return fetchPosts(0, feedType, setLikeButtons);
+    },
+    staleTime: Infinity,
+  });
+  if (query.isLoading) return <Loading />;
+  if (query.isError || !query.data) return <h2 className="error">error</h2>;
   return (
     <div className="container mb-4">
       <div className="row">
-        {postProp.map((post) => {
+        {query.data.map((post: Post) => {
           return (
             <div className="col-12" key={post.postId}>
               <div className="d-flex my-3 align-items-center">
@@ -81,19 +55,17 @@ function ForYou({ postProp, setPostProp, feedType }: ForYouProps) {
               />
 
               <div className="mt-3 d-flex align-items-center justify-content-start">
-                {feedType === "liked" ? (
-                  <Button
-                    className="btn btn-secondary w-25"
-                    title="Unlike"
-                    type="button"
-                  />
-                ) : (
-                  <Button
-                    className="btn btn-primary w-25"
-                    title="Like"
-                    type="button"
-                  />
-                )}
+                <Button
+                  className={`w-25 btn ${likeButtons.get(post.postId) ? "btn-secondary" : "btn-primary"}`}
+                  title={likeButtons.get(post.postId) ? "Unlike" : "Like"}
+                  type="button"
+                  handleClick={() => {
+                    const map = new Map(likeButtons);
+                    const oldValue = map.get(post.postId);
+                    map.set(post.postId, !oldValue);
+                    setLikeButtons(map);
+                  }}
+                />
               </div>
             </div>
           );
@@ -110,4 +82,4 @@ function ForYou({ postProp, setPostProp, feedType }: ForYouProps) {
   );
 }
 
-export default ForYou;
+export default Tab;

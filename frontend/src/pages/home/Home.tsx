@@ -3,16 +3,10 @@ import SideNav from "../../components/SideNav/SideNav";
 import styles from "./Home.module.css";
 import PostFeed from "./tabs/PostFeed.tsx";
 import { useState } from "react";
-type Post = {
-  postId: number;
-  photoUrl: string;
-  profilePic: string;
-  postOwner: string;
-};
 function Home() {
-  const [forYouPosts, setForYouPosts] = useState<Post[] | null>(null);
-  const [followingPosts, setFollowingPosts] = useState<Post[] | null>(null);
-  const [likedPosts, setLikedPosts] = useState<Post[] | null>(null);
+  const [likeButtons, setLikeButtons] = useState<Map<number, boolean>>(
+    new Map(),
+  );
   return (
     <>
       <SideNav />
@@ -25,23 +19,23 @@ function Home() {
 
         <TabPanel>
           <PostFeed
-            postProp={forYouPosts}
-            setPostProp={setForYouPosts}
             feedType="for-you"
+            likeButtons={likeButtons}
+            setLikeButtons={setLikeButtons}
           />
         </TabPanel>
         <TabPanel>
           <PostFeed
-            postProp={followingPosts}
-            setPostProp={setFollowingPosts}
             feedType="followings"
+            likeButtons={likeButtons}
+            setLikeButtons={setLikeButtons}
           />
         </TabPanel>
         <TabPanel>
           <PostFeed
-            postProp={likedPosts}
-            setPostProp={setLikedPosts}
             feedType="liked"
+            likeButtons={likeButtons}
+            setLikeButtons={setLikeButtons}
           />
         </TabPanel>
       </Tabs>

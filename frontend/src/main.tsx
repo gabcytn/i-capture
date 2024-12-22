@@ -9,6 +9,9 @@ import Post from "./pages/post/Post.tsx";
 import Profile from "./pages/profile/Profile.tsx";
 import Search from "./pages/search/Search.tsx";
 import Home from "./pages/home/Home.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const Main = () => {
   return (
@@ -33,4 +36,8 @@ const Main = () => {
 
 export default Main;
 
-createRoot(document.getElementById("root")!).render(<Main />);
+createRoot(document.getElementById("root")!).render(
+  <QueryClientProvider client={queryClient}>
+    <Main />
+  </QueryClientProvider>,
+);

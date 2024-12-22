@@ -5,6 +5,11 @@ async function fetchPosts(cursor: number, feedType: string) {
     method: "GET",
     credentials: "include",
   });
+  if (res.status === 403) {
+    alert("Session has expired... Logging you out");
+    sessionStorage.clear();
+    location.reload();
+  }
   const data = await res.json();
   return data;
 }

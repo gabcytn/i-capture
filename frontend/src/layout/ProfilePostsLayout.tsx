@@ -54,7 +54,7 @@ function ProfilePostsLayout({ setPostsCount }: PropType) {
               style={{ textDecoration: "none", color: "#020202" }}
             >
               <img
-                style={{ height: "300px" }}
+                style={{ height: "300px", width: "100%" }}
                 src={post.photoUrl}
                 alt="Post image"
               />

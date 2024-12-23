@@ -1,8 +1,9 @@
 import Loading from "../../loading/Loading";
 import styles from "./PostFeed.module.css";
 import Button from "../../../components/Button";
-import { fetchPosts } from "./asyncFunctions";
+import { fetchPosts, likeUnlike } from "./asyncFunctions";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 type Post = {
   postId: number;
@@ -23,7 +24,6 @@ function Tab({ feedType, likeButtons, setLikeButtons }: TabProps) {
     queryFn: () => {
       return fetchPosts(0, feedType, setLikeButtons);
     },
-    staleTime: Infinity,
   });
   if (query.isLoading) return <Loading />;
   if (query.isError || !query.data) return <h2 className="error">error</h2>;
@@ -62,8 +62,10 @@ function Tab({ feedType, likeButtons, setLikeButtons }: TabProps) {
                   handleClick={() => {
                     const map = new Map(likeButtons);
                     const oldValue = map.get(post.postId);
+                    const method = map.get(post.postId) ? "unlike" : "like";
                     map.set(post.postId, !oldValue);
                     setLikeButtons(map);
+                    likeUnlike(method, post.postId);
                   }}
                 />
               </div>

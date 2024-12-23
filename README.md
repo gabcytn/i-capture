@@ -38,19 +38,12 @@ https://github.com/user-attachments/assets/bc223722-525f-4eee-b91b-d21812b70051
 
 ## Getting Started
 
-**Prerequisites:**
-
-* Node.js (v16 or higher)
-* Java (v17 or higher)
-* MySQL
-* Cloudinary Account
-
 #### Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/instagram-semi-clone.git
-cd instagram-semi-clone
+git clone https://github.com/gabcytn/i-capture.git
+cd i-capture
 ```
 2. Serve the frontend:
 ```bash
@@ -70,7 +63,7 @@ cd backend
 ```
 5. Database:
 ```
-Import the schema from backend/sql/schema.sql into your MySQL instance.
+Import the schema from backend/src/main/resources/schema.sql into your MySQL instance.
 ```
 6. Access the Application at:
 ```

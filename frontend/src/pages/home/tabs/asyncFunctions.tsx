@@ -33,9 +33,6 @@ export async function likeUnlike(method: string, postId: number) {
     credentials: "include",
   });
   if (res.status === 403) sessionExpired();
-
-  const data = await res.json();
-  return data;
 }
 
 function sessionExpired() {

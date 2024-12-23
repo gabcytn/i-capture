@@ -10,7 +10,6 @@ export async function fetchPosts(
   likeButtons: Map<number, boolean>,
   setLikeButtons: (map: Map<number, boolean>) => void,
 ) {
-  console.log("fetching posts: " + feedType);
   const SERVER_URL = getServerUrl();
   const res = await fetch(`${SERVER_URL}/posts/${feedType}?cursor=${cursor}`, {
     method: "GET",
@@ -18,9 +17,11 @@ export async function fetchPosts(
   });
   if (res.status === 403) sessionExpired();
 
+  if (!res.ok) throw new Error(`Error status code of ${res.status}`);
+
   const data = await res.json();
   const map = new Map<number, boolean>(likeButtons);
-  data.map((post: Post) => {
+  data.posts.map((post: Post) => {
     map.set(post.postId, feedType === "liked");
   });
   setLikeButtons(map);

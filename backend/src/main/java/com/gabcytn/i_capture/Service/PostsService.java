@@ -1,5 +1,6 @@
 package com.gabcytn.i_capture.Service;
 
+import com.gabcytn.i_capture.Model.PaginatedList;
 import com.gabcytn.i_capture.Model.Post;
 import com.gabcytn.i_capture.Model.User;
 import com.gabcytn.i_capture.Repository.LikesRepository;
@@ -100,7 +101,7 @@ public class PostsService {
         }
     }
 
-    public ResponseEntity<List<Map<String, Object>>> getPostsForYou (
+    public ResponseEntity<PaginatedList> getPostsForYou (
             HttpServletRequest request,
             int lastPostId,
             boolean isFollowing
@@ -110,27 +111,36 @@ public class PostsService {
         try {
             final List<Map<String, Object>> posts =
                     postsRepository.findPostsForYourOrFollowing(getStoredUuid(request), lastPostId, isFollowing);
-            Collections.shuffle(posts);
-            return new ResponseEntity<>(posts, HttpStatus.OK);
+            return getPaginatedListResponseEntity(posts);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public ResponseEntity<List<Map<String, Object>>> getLikedPosts(
+    public ResponseEntity<PaginatedList> getLikedPosts(
             HttpServletRequest request,
             int lastPostId
     ) {
         lastPostId = lastPostId != 0 ? lastPostId : postsRepository.getLastPostId() + 1;
         try {
             final List<Map<String, Object>> likedPosts = postsRepository.findLikedPosts(getStoredUuid(request), lastPostId);
-            Collections.shuffle(likedPosts);
-            return new ResponseEntity<>(likedPosts, HttpStatus.OK);
+            return getPaginatedListResponseEntity(likedPosts);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private ResponseEntity<PaginatedList> getPaginatedListResponseEntity(List<Map<String, Object>> posts) {
+        PaginatedList paginatedList = new PaginatedList();
+        paginatedList.setPosts(posts);
+        if (!posts.isEmpty()) {
+            Object nextCursor = posts.getLast().get("postId");
+            if (nextCursor != null) paginatedList.setNextCursor((int) nextCursor);
+        }
+        Collections.shuffle(posts);
+        return new ResponseEntity<>(paginatedList, HttpStatus.OK);
     }
 
     private UUID getStoredUuid (HttpServletRequest request) {

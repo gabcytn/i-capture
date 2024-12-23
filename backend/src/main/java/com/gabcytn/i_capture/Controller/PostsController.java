@@ -1,5 +1,6 @@
 package com.gabcytn.i_capture.Controller;
 
+import com.gabcytn.i_capture.Model.PaginatedList;
 import com.gabcytn.i_capture.Model.Post;
 import com.gabcytn.i_capture.Service.PostsService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,7 +52,7 @@ public class PostsController {
     }
 
     @GetMapping("/posts/for-you")
-    public ResponseEntity<List<Map<String, Object>>> getPostsForYou (
+    public ResponseEntity<PaginatedList> getPostsForYou (
             HttpServletRequest request,
             @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
     ) {
@@ -59,7 +60,7 @@ public class PostsController {
     }
 
     @GetMapping("posts/followings")
-    public ResponseEntity<List<Map<String, Object>>> getPostsFromFollowings (
+    public ResponseEntity<PaginatedList> getPostsFromFollowings (
             HttpServletRequest request,
             @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
     ) {
@@ -67,7 +68,7 @@ public class PostsController {
     }
 
     @GetMapping("posts/liked")
-    public ResponseEntity<List<Map<String, Object>>> getLikedPosts (
+    public ResponseEntity<PaginatedList> getLikedPosts (
             HttpServletRequest request,
             @RequestParam(value = "cursor", defaultValue = "0") int lastViewedPostId
     ) {

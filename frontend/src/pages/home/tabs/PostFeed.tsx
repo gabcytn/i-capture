@@ -3,7 +3,6 @@ import styles from "./PostFeed.module.css";
 import Button from "../../../components/Button";
 import { fetchPosts, likeUnlike } from "./asyncFunctions";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 
 type Post = {
   postId: number;
@@ -22,8 +21,9 @@ function Tab({ feedType, likeButtons, setLikeButtons }: TabProps) {
   const query = useQuery({
     queryKey: ["posts", feedType],
     queryFn: () => {
-      return fetchPosts(0, feedType, setLikeButtons);
+      return fetchPosts(0, feedType, likeButtons, setLikeButtons);
     },
+    staleTime: Infinity,
   });
   if (query.isLoading) return <Loading />;
   if (query.isError || !query.data) return <h2 className="error">error</h2>;

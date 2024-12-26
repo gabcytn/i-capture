@@ -71,6 +71,7 @@ function Tab({ feedType, likeButtons, setLikeButtons }: TabProps) {
                       src={post.photoUrl}
                       alt=""
                       role="button"
+                      className={styles.postImage}
                       onClick={() => {
                         location.href = `${location.origin}/post/${post.postId}`;
                       }}

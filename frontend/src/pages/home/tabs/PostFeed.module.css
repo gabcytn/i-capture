@@ -3,3 +3,7 @@
 	height: 3rem;
 	border-radius: 100%;
 }
+
+.postImage {
+	border-radius: 5px;
+}

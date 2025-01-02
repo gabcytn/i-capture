@@ -2,7 +2,7 @@
 
 A minimalist Instagram-like platform built with a modern tech stack, featuring core functionalities of user authentication, post creation, likes, follows, and search.
 
-https://github.com/user-attachments/assets/bc223722-525f-4eee-b91b-d21812b70051
+https://github.com/user-attachments/assets/372e32e6-1b62-4104-ac94-a85ab93f059e
 
 ## Features
 
